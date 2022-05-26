@@ -17,5 +17,7 @@ public class MainWindow {
 
         Test.run();
         com.cfive.classroom.interaction.library.database.Test.run();
+
+        System.out.println("This is a test");
     }
 }
