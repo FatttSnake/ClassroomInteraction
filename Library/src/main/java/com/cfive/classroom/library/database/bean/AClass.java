@@ -9,7 +9,7 @@ import com.sun.istack.internal.NotNull;
  * @version 1.0
  */
 
-public class Class {
+public class AClass {
     private final long classID;
     private Major major;
     private int grade;
@@ -23,7 +23,7 @@ public class Class {
      * @param grade 年级
      * @param classNum 班号
      */
-    public Class(@NotNull long classID, @NotNull Major major, @NotNull int grade, @NotNull int classNum) {
+    public AClass(@NotNull long classID, @NotNull Major major, @NotNull int grade, @NotNull int classNum) {
         this.classID = classID;
         this.major = major;
         this.grade = grade;
