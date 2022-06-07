@@ -12,7 +12,7 @@ public class Student {
     private final long stuID;
     private String stuName;
     private Gender gender;
-    private Class aClass;
+    private AClass aClass;
     private String password;
     private String salt;
 
@@ -26,7 +26,7 @@ public class Student {
      * @param password 密码
      * @param salt 加盐
      */
-    public Student(@NotNull long stuID, @NotNull String stuName, @NotNull Gender gender, @NotNull Class aClass, @NotNull String password, @NotNull String salt) {
+    public Student(@NotNull long stuID, @NotNull String stuName, @NotNull Gender gender, @NotNull AClass aClass, @NotNull String password, @NotNull String salt) {
         this.stuID = stuID;
         this.stuName = stuName;
         this.gender = gender;
@@ -85,10 +85,10 @@ public class Student {
     /**
      * 获取隶属班级
      *
-     * @return <code>Class</code> 隶属班级
-     * @see Class
+     * @return <code>AClass</code> 隶属班级
+     * @see AClass
      */
-    public Class getaClass() {
+    public AClass getaClass() {
         return aClass;
     }
 
@@ -96,9 +96,9 @@ public class Student {
      * 设置隶属班级
      *
      * @param aClass 隶属班级
-     * @see Class
+     * @see AClass
      */
-    public void setaClass(@NotNull Class aClass) {
+    public void setAClass(@NotNull AClass aClass) {
         this.aClass = aClass;
     }
 
