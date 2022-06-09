@@ -8,7 +8,6 @@ public class MessageObject implements Serializable {
     private String code;
     private String count;
     private String message;
-    public MessageObject(){}
 
     public MessageObject(String stuNo, String name, String code, String message,String count) {
         this.stuNo = stuNo;

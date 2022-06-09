@@ -11,24 +11,22 @@ import java.net.Socket;
 
 public class SendThread extends Thread{
     private static final Logger LOGGER = LogManager.getLogger();
-    private Socket socket;
-    private MessageObject messageObject;
+    private final Socket socket;
+    private final MessageObject messageObject;
     public SendThread(Socket socket,MessageObject messageObject) {
         this.socket = socket;
         this.messageObject = messageObject;
     }
     public void run() {
         try {
-
             // 获取输入的内容
             OutputStream outputStream = socket.getOutputStream();
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
             objectOutputStream.writeObject(messageObject);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
+        } finally {
+            interrupt();
         }
-
-
     }
 }
