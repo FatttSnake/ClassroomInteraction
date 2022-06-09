@@ -8,8 +8,12 @@ import com.cfive.classroom.library.database.util.InsertException;
 import com.cfive.classroom.library.database.util.NoConfigException;
 import com.sun.istack.internal.Nullable;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper {
@@ -253,10 +257,21 @@ public class DatabaseHelper {
         return AttendanceOA.delete(attID);
     }
 
-    public static boolean queryCourses(long tchID) throws NoConfigException, SQLException, DependenciesNotFoundException {
+    public static List<Course> queryCourses(long tchID) throws NoConfigException, SQLException, DependenciesNotFoundException {
         if (isExistsInTeacher(tchID)) throw new DependenciesNotFoundException();
-        // TODO: Query Courses
-        return false;
+        ArrayList<Course> courses = new ArrayList<>();
+        String sql = "SELECT courID FROM course,teacher WHERE course.tchID=teacher.tchID AND course.tchID=?";
+        try (Connection connection = PoolHelper.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setLong(1, tchID);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        courses.add(selectFromCourse(resultSet.getLong("courID")));
+                    }
+                }
+            }
+        }
+        return courses;
     }
 
     public static void close() {
