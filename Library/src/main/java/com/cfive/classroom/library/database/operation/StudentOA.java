@@ -49,6 +49,15 @@ public class StudentOA {
         return null;
     }
 
+    public static boolean checkPasswd(long stuID, String passwd) throws DependenciesNotFoundException, NoConfigException, SQLException, NoSuchAlgorithmException, InvalidKeySpecException {
+        Student student = select(stuID);
+        if (student == null) {
+            throw new DependenciesNotFoundException();
+        }
+        PBKDF2Util pbkdf2Util = new PBKDF2Util();
+        return pbkdf2Util.authenticate(passwd, student.getPassword(), student.getSalt());
+    }
+
     public static Student insert(long stuID, String stuName, Gender gender, long classID, String passwd) throws NoConfigException, SQLException, AlreadyExistsException, DependenciesNotFoundException, InsertException, NoSuchAlgorithmException, InvalidKeySpecException {
         if (isExists(stuID)) throw new AlreadyExistsException();
         if (!ClassOA.isExists(classID)) throw new DependenciesNotFoundException();
