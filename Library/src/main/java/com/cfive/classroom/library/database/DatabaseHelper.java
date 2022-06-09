@@ -6,8 +6,12 @@ import com.cfive.classroom.library.database.util.AlreadyExistsException;
 import com.cfive.classroom.library.database.util.DependenciesNotFoundException;
 import com.cfive.classroom.library.database.util.InsertException;
 import com.cfive.classroom.library.database.util.NoConfigException;
+import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.Policy;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -185,8 +189,8 @@ public class DatabaseHelper {
         return StudentOA.select(stuID);
     }
 
-    public static Student insertIntoStudent(long stuID, String stuName, Gender gender, long classID, String passwd, String salt) throws NoConfigException, SQLException, InsertException, AlreadyExistsException, DependenciesNotFoundException {
-        return StudentOA.insert(stuID, stuName, gender, classID, passwd, salt);
+    public static Student insertIntoStudent(@NotNull long stuID, String stuName, Gender gender, long classID, String passwd) throws NoConfigException, SQLException, InsertException, AlreadyExistsException, DependenciesNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException {
+        return StudentOA.insert(stuID, stuName, gender, classID, passwd);
     }
 
     public static boolean isExistsInStudent(long stuID) throws NoConfigException, SQLException {
@@ -258,7 +262,7 @@ public class DatabaseHelper {
     }
 
     public static List<Course> queryCourses(long tchID) throws NoConfigException, SQLException, DependenciesNotFoundException {
-        if (isExistsInTeacher(tchID)) throw new DependenciesNotFoundException();
+        if (!isExistsInTeacher(tchID)) throw new DependenciesNotFoundException();
         ArrayList<Course> courses = new ArrayList<>();
         String sql = "SELECT courID FROM course,teacher WHERE course.tchID=teacher.tchID AND course.tchID=?";
         try (Connection connection = PoolHelper.getConnection()) {
@@ -272,6 +276,22 @@ public class DatabaseHelper {
             }
         }
         return courses;
+    }
+
+    public static List<Student> selectStudentsFromCourse(long courID) throws DependenciesNotFoundException, NoConfigException, SQLException {
+        if (!isExistsInCourse(courID)) throw new DependenciesNotFoundException();
+
+        ArrayList<Student> students = new ArrayList<>();
+        String sql = "SELECT stuID FROM attendance WHERE courID=?";
+        try (Connection connection = PoolHelper.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setLong(1, courID);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    students.add(StudentOA.select(resultSet.getLong("stuID")));
+                }
+            }
+        }
+        return students;
     }
 
     public static boolean updateAttendance(String attID, AttStatus attStatus) throws NoConfigException, SQLException, DependenciesNotFoundException {
