@@ -133,7 +133,7 @@ public class DatabaseHelper {
         return ClassOA.selectAll();
     }
 
-    public static AClass selectFromClass(int classID) throws NoConfigException, SQLException {
+    public static AClass selectFromClass(long classID) throws NoConfigException, SQLException {
         return ClassOA.select(classID);
     }
 
@@ -157,7 +157,7 @@ public class DatabaseHelper {
         return ClassOA.insert(classID, majorName, grade, classNum);
     }
 
-    public static boolean isExistsInClass(int classID) throws NoConfigException, SQLException {
+    public static boolean isExistsInClass(long classID) throws NoConfigException, SQLException {
         return ClassOA.isExists(classID);
     }
 
@@ -165,7 +165,7 @@ public class DatabaseHelper {
         return ClassOA.isExists(majorID, grade, classNum);
     }
 
-    public static boolean deleteFromClass(int classID) throws NoConfigException, SQLException {
+    public static boolean deleteFromClass(long classID) throws NoConfigException, SQLException {
         return ClassOA.delete(classID);
     }
 
@@ -177,7 +177,7 @@ public class DatabaseHelper {
         return StudentOA.selectAll();
     }
 
-    public static Student selectFromStudent(int stuID) throws NoConfigException, SQLException {
+    public static Student selectFromStudent(long stuID) throws NoConfigException, SQLException {
         return StudentOA.select(stuID);
     }
 
@@ -185,11 +185,11 @@ public class DatabaseHelper {
         return StudentOA.insert(stuID, stuName, gender, classID, passwd, salt);
     }
 
-    public static boolean isExistsInStudent(int stuID) throws NoConfigException, SQLException {
+    public static boolean isExistsInStudent(long stuID) throws NoConfigException, SQLException {
         return StudentOA.isExists(stuID);
     }
 
-    public static boolean deleteFromStudent(int stuID) throws NoConfigException, SQLException {
+    public static boolean deleteFromStudent(long stuID) throws NoConfigException, SQLException {
         return StudentOA.delete(stuID);
     }
 
@@ -205,11 +205,11 @@ public class DatabaseHelper {
         return TeacherOA.insert(tchID, tchName, gender, facID, passwd, salt);
     }
 
-    public static boolean isExistsInTeacher(int tchID) throws NoConfigException, SQLException {
+    public static boolean isExistsInTeacher(long tchID) throws NoConfigException, SQLException {
         return TeacherOA.isExists(tchID);
     }
 
-    public static boolean deleteFromTeacher(int tchID) throws NoConfigException, SQLException {
+    public static boolean deleteFromTeacher(long tchID) throws NoConfigException, SQLException {
         return TeacherOA.delete(tchID);
     }
 
@@ -217,7 +217,7 @@ public class DatabaseHelper {
         return CourseOA.selectAll();
     }
 
-    public static Course selectFromCourse(int courID) throws NoConfigException, SQLException {
+    public static Course selectFromCourse(long courID) throws NoConfigException, SQLException {
         return CourseOA.select(courID);
     }
 
@@ -225,11 +225,11 @@ public class DatabaseHelper {
         return CourseOA.insert(courID, subID, tchID, courTimeStart, courTimeEnd);
     }
 
-    public static boolean isExistsInCourse(int courID) throws NoConfigException, SQLException {
+    public static boolean isExistsInCourse(long courID) throws NoConfigException, SQLException {
         return CourseOA.isExists(courID);
     }
 
-    public static boolean deleteFromCourse(int courID) throws NoConfigException, SQLException {
+    public static boolean deleteFromCourse(long courID) throws NoConfigException, SQLException {
         return CourseOA.delete(courID);
     }
 
@@ -251,6 +251,12 @@ public class DatabaseHelper {
 
     public static boolean deleteFromAttendance(String attID) throws NoConfigException, SQLException {
         return AttendanceOA.delete(attID);
+    }
+
+    public static boolean queryCourses(long tchID) throws NoConfigException, SQLException, DependenciesNotFoundException {
+        if (isExistsInTeacher(tchID)) throw new DependenciesNotFoundException();
+        // TODO: Query Courses
+        return false;
     }
 
     public static void close() {
