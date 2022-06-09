@@ -1,12 +1,13 @@
-package com.cfive.classroom.library.net.gzw;
+package com.cfive.classroom.library.net;
 
+import com.cfive.classroom.library.net.util.MessageObject;
+import com.cfive.classroom.library.net.util.ReceiveListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class TeacherNet {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -49,9 +50,9 @@ public class TeacherNet {
     //接受信息
     public void receiveMessageThread(ReceiveListener receiveListener)
     {
-        RecieveThread recieveThread = new RecieveThread(socket);
-        recieveThread.setOnReceiveListener(receiveListener);
-        recieveThread.start();
+        ReceiveThread receiveThread = new ReceiveThread(socket);
+        receiveThread.setOnReceiveListener(receiveListener);
+        receiveThread.start();
     }
 
 

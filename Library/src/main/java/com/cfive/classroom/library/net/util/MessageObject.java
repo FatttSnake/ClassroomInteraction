@@ -1,4 +1,4 @@
-package com.cfive.classroom.library.net.gzw;
+package com.cfive.classroom.library.net.util;
 
 import java.io.Serializable;
 
