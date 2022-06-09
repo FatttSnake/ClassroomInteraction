@@ -191,6 +191,10 @@ public class DatabaseHelper {
         return StudentOA.checkPasswd(stuID, passwd);
     }
 
+    public static boolean changePasswdInStudent(long stuID, String passwd) throws NoConfigException, SQLException, DependenciesNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException {
+        return StudentOA.changePasswd(stuID, passwd);
+    }
+
     public static Student insertIntoStudent(long stuID, String stuName, Gender gender, long classID, String passwd) throws NoConfigException, SQLException, InsertException, AlreadyExistsException, DependenciesNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException {
         return StudentOA.insert(stuID, stuName, gender, classID, passwd);
     }
@@ -213,6 +217,10 @@ public class DatabaseHelper {
 
     public static boolean checkPasswdInTeacher(long tchID, String passwd) throws NoConfigException, SQLException, DependenciesNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException {
         return TeacherOA.checkPasswd(tchID, passwd);
+    }
+
+    public static boolean changePasswdInTeacher(long tchID, String passwd) throws NoConfigException, SQLException, DependenciesNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException {
+        return TeacherOA.changePasswd(tchID, passwd);
     }
 
     public static Teacher insertIntoTeacher(long tchID, String tchName, Gender gender, int facID, String passwd) throws NoConfigException, SQLException, InsertException, AlreadyExistsException, DependenciesNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException {
