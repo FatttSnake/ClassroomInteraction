@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public abstract class CommonOA {
-    public static boolean isExists(String sql, int id) throws NoConfigException, SQLException {
+    protected static boolean isExists(String sql, int id) throws NoConfigException, SQLException {
         try (Connection connection = PoolHelper.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 preparedStatement.setInt(1, id);
@@ -23,7 +23,7 @@ public abstract class CommonOA {
         return false;
     }
 
-    public static boolean isExists(String sql, String name) throws NoConfigException, SQLException {
+    protected static boolean isExists(String sql, String name) throws NoConfigException, SQLException {
         try (Connection connection = PoolHelper.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 preparedStatement.setString(1, name);

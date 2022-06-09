@@ -20,7 +20,8 @@ public class MajorOA extends CommonOA {
             try (Statement statement = connection.createStatement()) {
                 try (ResultSet resultSet = statement.executeQuery(sql)) {
                     while (resultSet.next()) {
-                        majors.add(new Major(resultSet.getInt("majorID"), resultSet.getString("majorName"), new Faculty(resultSet.getInt("facID"), resultSet.getString("facName"))));
+                        Faculty faculty = new Faculty(resultSet.getInt("facID"), resultSet.getString("facName"));
+                        majors.add(new Major(resultSet.getInt("majorID"), resultSet.getString("majorName"), faculty));
                     }
                 }
             }
@@ -35,7 +36,8 @@ public class MajorOA extends CommonOA {
                 preparedStatement.setInt(1, majorID);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        return new Major(resultSet.getInt("majorID"), resultSet.getString("majorName"), new Faculty(resultSet.getInt("facID"), resultSet.getString("facName")));
+                        Faculty faculty = new Faculty(resultSet.getInt("facID"), resultSet.getString("facName"));
+                        return new Major(resultSet.getInt("majorID"), resultSet.getString("majorName"), faculty);
                     }
                 }
             }

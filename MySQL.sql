@@ -127,7 +127,7 @@ create table Attendance
     attID    char(36)                  not null comment '考勤编号',
     courID    bigint                    not null comment '隶属课程',
     stuID     int                       not null comment '隶属学生',
-    attTie    timestamp                 null comment '考勤时间',
+    attTime    timestamp                 null comment '考勤时间',
     attStatus enum ('not_signed', 'signed', 'absence', 'personal_leave', 'sick_leave', 'public_holiday', 'late', 'leave_early') default 'not_signed' not null comment '考勤状态',
     constraint Attendance_pk
         primary key (attID)
@@ -143,12 +143,52 @@ from faculty;
 ALTER TABLE faculty
     AUTO_INCREMENT = 19;
 
-delete
-from faculty;
-
 INSERT INTO faculty
 values (2, '计算机学院'),
        (18, '工程训练中心');
 
 
-SELECT EXISTS(SELECT 1 FROM faculty WHERE facName = '信息学院')
+SELECT EXISTS(SELECT 1 FROM faculty WHERE facName = '信息学院');
+
+
+SELECT attID,
+       attTime,
+       attStatus,
+       student.stuID,
+       stuName,
+       stuGender,
+       student.passwd,
+       student.salt,
+       class.classID,
+       grade,
+       classNum,
+       major.majorID,
+       majorName,
+       course.courID,
+       courTimeFrom,
+       courTimeEnd,
+       subject.subID,
+       teacher.tchID,
+       tchName,
+       tchGender,
+       teacher.passwd,
+       teacher.salt,
+       faculty.facID,
+       facName
+FROM attendance,
+     student,
+     class,
+     major,
+     course,
+     subject,
+     teacher,
+     faculty
+where attendance.courID = course.courID
+  AND attendance.stuID = student.stuID
+  AND class.classID = student.classID
+  AND class.majorID = major.majorID
+  AND major.facID = faculty.facID
+  AND course.subID = subject.subID
+  AND course.tchID = teacher.tchID
+  AND teacher.facID = faculty.facID
+ORDER BY courID, attTime, attStatus;

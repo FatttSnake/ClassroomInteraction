@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.*;
 import java.util.List;
+import java.util.UUID;
 
 public class DatabaseTest {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -66,5 +67,10 @@ public class DatabaseTest {
     void selectFromFacultyTest() throws NoConfigException, SQLException {
         LOGGER.debug(DatabaseHelper.selectFromFaculty("计算机学院"));
         LOGGER.debug(DatabaseHelper.selectFromFaculty(6));
+    }
+
+    @Test
+    void TempTest() {
+        LOGGER.debug(String.valueOf(UUID.randomUUID()));
     }
 }

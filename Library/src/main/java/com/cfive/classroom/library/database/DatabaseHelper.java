@@ -1,19 +1,15 @@
 package com.cfive.classroom.library.database;
 
-import com.cfive.classroom.library.database.bean.AClass;
-import com.cfive.classroom.library.database.bean.Faculty;
-import com.cfive.classroom.library.database.bean.Major;
-import com.cfive.classroom.library.database.bean.Subject;
-import com.cfive.classroom.library.database.operation.ClassOA;
-import com.cfive.classroom.library.database.operation.FacultyOA;
-import com.cfive.classroom.library.database.operation.MajorOA;
-import com.cfive.classroom.library.database.operation.SubjectOA;
+import com.cfive.classroom.library.database.bean.*;
+import com.cfive.classroom.library.database.operation.*;
 import com.cfive.classroom.library.database.util.AlreadyExistsException;
 import com.cfive.classroom.library.database.util.DependenciesNotFoundException;
 import com.cfive.classroom.library.database.util.InsertException;
 import com.cfive.classroom.library.database.util.NoConfigException;
+import com.sun.istack.internal.Nullable;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class DatabaseHelper {
@@ -177,7 +173,85 @@ public class DatabaseHelper {
         return ClassOA.delete(majorID, grade, classNum);
     }
 
+    public static List<Student> selectAllFromStudent() throws NoConfigException, SQLException {
+        return StudentOA.selectAll();
+    }
 
+    public static Student selectFromStudent(int stuID) throws NoConfigException, SQLException {
+        return StudentOA.select(stuID);
+    }
+
+    public static Student insertIntoStudent(long stuID, String stuName, Gender gender, long classID, String passwd, String salt) throws NoConfigException, SQLException, InsertException, AlreadyExistsException, DependenciesNotFoundException {
+        return StudentOA.insert(stuID, stuName, gender, classID, passwd, salt);
+    }
+
+    public static boolean isExistsInStudent(int stuID) throws NoConfigException, SQLException {
+        return StudentOA.isExists(stuID);
+    }
+
+    public static boolean deleteFromStudent(int stuID) throws NoConfigException, SQLException {
+        return StudentOA.delete(stuID);
+    }
+
+    public static List<Teacher> selectAllFromTeacher() throws NoConfigException, SQLException {
+        return TeacherOA.selectAll();
+    }
+
+    public static Teacher selectFromTeacher(int tchID) throws NoConfigException, SQLException {
+        return TeacherOA.select(tchID);
+    }
+
+    public static Teacher insertIntoTeacher(long tchID, String tchName, Gender gender, int facID, String passwd, String salt) throws NoConfigException, SQLException, InsertException, AlreadyExistsException, DependenciesNotFoundException {
+        return TeacherOA.insert(tchID, tchName, gender, facID, passwd, salt);
+    }
+
+    public static boolean isExistsInTeacher(int tchID) throws NoConfigException, SQLException {
+        return TeacherOA.isExists(tchID);
+    }
+
+    public static boolean deleteFromTeacher(int tchID) throws NoConfigException, SQLException {
+        return TeacherOA.delete(tchID);
+    }
+
+    public static List<Course> selectAllFromCourse() throws NoConfigException, SQLException {
+        return CourseOA.selectAll();
+    }
+
+    public static Course selectFromCourse(int courID) throws NoConfigException, SQLException {
+        return CourseOA.select(courID);
+    }
+
+    public static Course insertIntoCourse(long courID, int subID, long tchID, LocalDateTime courTimeStart, LocalDateTime courTimeEnd) throws NoConfigException, SQLException, InsertException, AlreadyExistsException, DependenciesNotFoundException {
+        return CourseOA.insert(courID, subID, tchID, courTimeStart, courTimeEnd);
+    }
+
+    public static boolean isExistsInCourse(int courID) throws NoConfigException, SQLException {
+        return CourseOA.isExists(courID);
+    }
+
+    public static boolean deleteFromCourse(int courID) throws NoConfigException, SQLException {
+        return CourseOA.delete(courID);
+    }
+
+    public static List<Attendance> selectAllFromAttendance() throws NoConfigException, SQLException {
+        return AttendanceOA.selectAll();
+    }
+
+    public static Attendance selectFromAttendance(String attID) throws NoConfigException, SQLException {
+        return AttendanceOA.select(attID);
+    }
+
+    public static Attendance insertIntoAttendance(long courID, long stuID, @Nullable LocalDateTime attTime, AttStatus attStatus) throws NoConfigException, SQLException, InsertException, AlreadyExistsException, DependenciesNotFoundException {
+        return AttendanceOA.insert(courID, stuID, attTime, attStatus);
+    }
+
+    public static boolean isExistsInAttendance(String attID) throws NoConfigException, SQLException {
+        return AttendanceOA.isExists(attID);
+    }
+
+    public static boolean deleteFromAttendance(String attID) throws NoConfigException, SQLException {
+        return AttendanceOA.delete(attID);
+    }
 
     public static void close() {
         PoolHelper.close();
