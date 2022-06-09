@@ -2,11 +2,10 @@ package com.cfive.classroom.library.database.operation;
 
 import com.cfive.classroom.library.database.PoolHelper;
 import com.cfive.classroom.library.database.bean.*;
-import com.cfive.classroom.library.database.util.AlreadyExistsException;
-import com.cfive.classroom.library.database.util.DependenciesNotFoundException;
-import com.cfive.classroom.library.database.util.InsertException;
-import com.cfive.classroom.library.database.util.NoConfigException;
+import com.cfive.classroom.library.database.util.*;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +43,22 @@ public class TeacherOA {
         return null;
     }
 
-    public static Teacher insert(long tchID, String tchName, Gender gender, int facID, String passwd, String salt) throws NoConfigException, SQLException, AlreadyExistsException, DependenciesNotFoundException, InsertException {
+    public static boolean checkPasswd(long tchID, String passwd) throws DependenciesNotFoundException, NoConfigException, SQLException, NoSuchAlgorithmException, InvalidKeySpecException {
+        Teacher teacher = select(tchID);
+        if (teacher == null) {
+            throw new DependenciesNotFoundException();
+        }
+        PBKDF2Util pbkdf2Util = new PBKDF2Util();
+        return pbkdf2Util.authenticate(passwd, teacher.getPassword(), teacher.getSalt());
+    }
+
+    public static Teacher insert(long tchID, String tchName, Gender gender, int facID, String passwd) throws NoConfigException, SQLException, AlreadyExistsException, DependenciesNotFoundException, InsertException, NoSuchAlgorithmException, InvalidKeySpecException {
         if (isExists(tchID)) throw new AlreadyExistsException();
         if (!FacultyOA.isExists(facID)) throw new DependenciesNotFoundException();
+
+        PBKDF2Util pbkdf2Util = new PBKDF2Util();
+        String salt = pbkdf2Util.generateSalt();
+        String encryptedPassword = pbkdf2Util.getEncryptedPassword(passwd, salt);
 
         String sql = "INSERT INTO teacher VALUES (?,?,?,?,?,?)";
         try (Connection connection = PoolHelper.getConnection()) {
@@ -55,7 +67,7 @@ public class TeacherOA {
                 preparedStatement.setString(2, tchName);
                 preparedStatement.setString(3, gender.name());
                 preparedStatement.setInt(4, facID);
-                preparedStatement.setString(5, passwd);
+                preparedStatement.setString(5, encryptedPassword);
                 preparedStatement.setString(6, salt);
                 if (preparedStatement.executeUpdate() == 1) {
                     return new Teacher(tchID, tchName, gender, FacultyOA.select(facID), passwd, salt);
