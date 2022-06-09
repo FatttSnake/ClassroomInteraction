@@ -12,5 +12,6 @@
     <orderEntry type="module" module-name="ClassroomInteraction.Library.main" />
     <orderEntry type="library" name="log4j-core-2.17.2" level="project" />
     <orderEntry type="library" name="log4j-api-2.17.2" level="project" />
+    <orderEntry type="library" name="formdev.flatlaf" level="project" />
   </component>
 </module>
