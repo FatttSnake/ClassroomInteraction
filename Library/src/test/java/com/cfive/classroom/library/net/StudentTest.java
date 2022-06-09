@@ -11,7 +11,7 @@ import java.io.IOException;
 public class StudentTest {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Test
+    /*@Test
     void studentListenterTest()  {
         StudentNet studentNet = new StudentNet();
         try {
@@ -43,5 +43,5 @@ public class StudentTest {
         messageObject.setCode("123");
         teacherNet.sendMessageThread(messageObject);
         while(true);
-    }
+    }*/
 }
