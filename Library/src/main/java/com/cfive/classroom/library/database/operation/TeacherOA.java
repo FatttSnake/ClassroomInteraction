@@ -52,6 +52,25 @@ public class TeacherOA {
         return pbkdf2Util.authenticate(passwd, teacher.getPassword(), teacher.getSalt());
     }
 
+    public static boolean changePasswd(long tchID, String passwd) throws NoConfigException, SQLException, DependenciesNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException {
+        Teacher teacher = select(tchID);
+        if (teacher == null) {
+            throw new DependenciesNotFoundException();
+        }
+        PBKDF2Util pbkdf2Util = new PBKDF2Util();
+        String salt = pbkdf2Util.generateSalt();
+        String encryptedPassword = pbkdf2Util.getEncryptedPassword(passwd, salt);
+        String sql = "UPDATE teacher SET passwd=?,salt=? WHERE tchID=?";
+        try (Connection connection = PoolHelper.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, encryptedPassword);
+                preparedStatement.setString(2, salt);
+                preparedStatement.setLong(3, tchID);
+                return preparedStatement.executeUpdate() == 1;
+            }
+        }
+    }
+
     public static Teacher insert(long tchID, String tchName, Gender gender, int facID, String passwd) throws NoConfigException, SQLException, AlreadyExistsException, DependenciesNotFoundException, InsertException, NoSuchAlgorithmException, InvalidKeySpecException {
         if (isExists(tchID)) throw new AlreadyExistsException();
         if (!FacultyOA.isExists(facID)) throw new DependenciesNotFoundException();
