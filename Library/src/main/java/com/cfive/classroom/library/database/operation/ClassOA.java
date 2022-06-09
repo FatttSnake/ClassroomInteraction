@@ -22,7 +22,9 @@ public class ClassOA {
             try (Statement statement = connection.createStatement()) {
                 try (ResultSet resultSet = statement.executeQuery(sql)) {
                     while (resultSet.next()) {
-                        AClasses.add(new AClass(resultSet.getLong("classID"), new Major(resultSet.getInt("majorID"), resultSet.getString("majorName"), new Faculty(resultSet.getInt("facID"), resultSet.getString("facName"))), resultSet.getInt("grade"), resultSet.getInt("classNum")));
+                        Faculty faculty = new Faculty(resultSet.getInt("facID"), resultSet.getString("facName"));
+                        Major major = new Major(resultSet.getInt("majorID"), resultSet.getString("majorName"), faculty);
+                        AClasses.add(new AClass(resultSet.getLong("classID"), major, resultSet.getInt("grade"), resultSet.getInt("classNum")));
                     }
                 }
             }
@@ -59,7 +61,9 @@ public class ClassOA {
     private static AClass getAClass(PreparedStatement preparedStatement) throws SQLException {
         try (ResultSet resultSet = preparedStatement.executeQuery()) {
             if (resultSet.next()) {
-                return new AClass(resultSet.getLong("classID"), new Major(resultSet.getInt("majorID"), resultSet.getString("majorName"), new Faculty(resultSet.getInt("facID"), resultSet.getString("facName"))), resultSet.getInt("grade"), resultSet.getInt("classNum"));
+                Faculty faculty = new Faculty(resultSet.getInt("facID"), resultSet.getString("facName"));
+                Major major = new Major(resultSet.getInt("majorID"), resultSet.getString("majorName"), faculty);
+                return new AClass(resultSet.getLong("classID"), major, resultSet.getInt("grade"), resultSet.getInt("classNum"));
             }
         }
         return null;

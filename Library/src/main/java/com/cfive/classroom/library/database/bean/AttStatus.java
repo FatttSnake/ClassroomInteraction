@@ -19,4 +19,29 @@ public enum AttStatus {
     public String toString() {
         return string;
     }
+
+    public static AttStatus fromString(String s) {
+        if (s.equals("signed")) {
+            return signed;
+        }
+        if (s.equals("absence")) {
+            return absence;
+        }
+        if (s.equals("personal_leave")) {
+            return personal_leave;
+        }
+        if (s.equals("sick_leave")) {
+            return sick_leave;
+        }
+        if (s.equals("public_holiday")) {
+            return public_holiday;
+        }
+        if (s.equals("late")) {
+            return late;
+        }
+        if (s.equals("leave_early")) {
+            return leave_early;
+        }
+        return not_signed;
+    }
 }
