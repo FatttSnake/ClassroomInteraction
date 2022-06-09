@@ -2,11 +2,12 @@ package com.cfive.classroom.library.database.operation;
 
 import com.cfive.classroom.library.database.PoolHelper;
 import com.cfive.classroom.library.database.bean.*;
-import com.cfive.classroom.library.database.util.AlreadyExistsException;
-import com.cfive.classroom.library.database.util.DependenciesNotFoundException;
-import com.cfive.classroom.library.database.util.InsertException;
-import com.cfive.classroom.library.database.util.NoConfigException;
+import com.cfive.classroom.library.database.util.*;
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +49,13 @@ public class StudentOA {
         return null;
     }
 
-    public static Student insert(long stuID, String stuName, Gender gender, long classID, String passwd, String salt) throws NoConfigException, SQLException, AlreadyExistsException, DependenciesNotFoundException, InsertException {
+    public static Student insert(long stuID, String stuName, Gender gender, long classID, String passwd) throws NoConfigException, SQLException, AlreadyExistsException, DependenciesNotFoundException, InsertException, NoSuchAlgorithmException, InvalidKeySpecException {
         if (isExists(stuID)) throw new AlreadyExistsException();
         if (!ClassOA.isExists(classID)) throw new DependenciesNotFoundException();
+
+        PBKDF2Util pbkdf2Util = new PBKDF2Util();
+        String salt = pbkdf2Util.generateSalt();
+        String encryptedPassword = pbkdf2Util.getEncryptedPassword(passwd, salt);
 
         String sql = "INSERT INTO student VALUES (?,?,?,?,?,?)";
         try (Connection connection = PoolHelper.getConnection()) {
@@ -59,7 +64,7 @@ public class StudentOA {
                 preparedStatement.setString(2, stuName);
                 preparedStatement.setString(3, gender.name());
                 preparedStatement.setLong(4, classID);
-                preparedStatement.setString(5, passwd);
+                preparedStatement.setString(5, encryptedPassword);
                 preparedStatement.setString(6, salt);
                 if (preparedStatement.executeUpdate() == 1) {
                     return new Student(classID, stuName, gender, ClassOA.select(classID), passwd, salt);
