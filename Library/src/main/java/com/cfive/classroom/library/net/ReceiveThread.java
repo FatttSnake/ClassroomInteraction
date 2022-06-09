@@ -10,9 +10,9 @@ import java.net.Socket;
 
 public class ReceiveThread extends Thread {
     private static final Logger LOGGER = LogManager.getLogger();
-    private Socket socket;
+    private final Socket socket;
     private ReceiveListener receiveListener;
-    private MessageObject messageObject;
+
     public ReceiveThread(Socket socket) {
         this.socket = socket;
     }
@@ -27,16 +27,13 @@ public class ReceiveThread extends Thread {
 
             while (true) {
 
-                messageObject = (MessageObject) objectInputStreamInputStream.readObject();
-//                LOGGER.info(messageObject);
+                MessageObject messageObject = (MessageObject) objectInputStreamInputStream.readObject();
                 if (receiveListener != null) {
                     receiveListener.onReceive(messageObject);
                 }
-//                System.out.println(msg);
             }
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
