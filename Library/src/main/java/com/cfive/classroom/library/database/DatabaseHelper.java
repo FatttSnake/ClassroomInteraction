@@ -274,6 +274,19 @@ public class DatabaseHelper {
         return courses;
     }
 
+    public static boolean updateAttendance(String attID, AttStatus attStatus) throws NoConfigException, SQLException, DependenciesNotFoundException {
+        if (!isExistsInAttendance(attID)) throw new DependenciesNotFoundException();
+
+        String sql = "UPDATE attendance SET attStatus=? WHERE attID=?";
+        try (Connection connection = PoolHelper.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, attStatus.name());
+                preparedStatement.setString(2, attID);
+                return preparedStatement.executeUpdate() == 1;
+            }
+        }
+    }
+
     public static void close() {
         PoolHelper.close();
     }
