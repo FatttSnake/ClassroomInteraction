@@ -6,11 +6,9 @@ import com.cfive.classroom.library.database.util.AlreadyExistsException;
 import com.cfive.classroom.library.database.util.DependenciesNotFoundException;
 import com.cfive.classroom.library.database.util.InsertException;
 import com.cfive.classroom.library.database.util.NoConfigException;
-import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
 import java.security.NoSuchAlgorithmException;
-import java.security.Policy;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -193,7 +191,7 @@ public class DatabaseHelper {
         return StudentOA.checkPasswd(stuID, passwd);
     }
 
-    public static Student insertIntoStudent(@NotNull long stuID, String stuName, Gender gender, long classID, String passwd) throws NoConfigException, SQLException, InsertException, AlreadyExistsException, DependenciesNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException {
+    public static Student insertIntoStudent(long stuID, String stuName, Gender gender, long classID, String passwd) throws NoConfigException, SQLException, InsertException, AlreadyExistsException, DependenciesNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException {
         return StudentOA.insert(stuID, stuName, gender, classID, passwd);
     }
 

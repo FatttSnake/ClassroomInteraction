@@ -16,11 +16,12 @@ public class PBKDF2Util {
     public static final int PBKDF2_ITERATIONS = 1000;        //迭代次数
 
     /**
-     * @auther: Ragty
-     * @describe: 对输入的密码进行验证
-     * @param: [attemptedPassword(待验证密码), encryptedPassword(密文), salt(盐值)]
-     * @return: boolean
-     * @date: 2018/11/2
+     * 对输入的密码进行验证
+     *
+     * @param attemptedPassword 待验证密码
+     * @param encryptedPassword 密文
+     * @param salt 盐值
+     * @return <code>boolean</code> 是否验证通过
      */
     public boolean authenticate(String attemptedPassword, String encryptedPassword, String salt)
             throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -30,13 +31,12 @@ public class PBKDF2Util {
         return encryptedAttemptedPassword.equals(encryptedPassword);
     }
 
-
     /**
-     * @auther: Ragty
-     * @describe: 生成密文
-     * @param: [password(明文密码), salt(盐值)]
-     * @return: java.lang.String
-     * @date: 2018/11/2
+     * 生成密文
+     *
+     * @param password 明文密码
+     * @param salt 盐值
+     * @return <code>String</code> 密文
      */
     public String getEncryptedPassword(String password, String salt) throws NoSuchAlgorithmException,
             InvalidKeySpecException {
@@ -46,13 +46,10 @@ public class PBKDF2Util {
         return toHex(f.generateSecret(spec).getEncoded());
     }
 
-
     /**
-     * @auther: Ragty
-     * @describe: 通过加密的强随机数生成盐(最后转换为16进制)
-     * @param: []
-     * @return: java.lang.String
-     * @date: 2018/11/2
+     * 通过加密的强随机数生成盐(最后转换为16进制)
+     *
+     * @return <code>String</code> 盐值
      */
     public String generateSalt() throws NoSuchAlgorithmException {
         SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
@@ -62,13 +59,11 @@ public class PBKDF2Util {
         return toHex(salt);
     }
 
-
     /**
-     * @auther: Ragty
-     * @describe: 十六进制字符串转二进制字符串
-     * @param: [hex]
-     * @return: byte[]
-     * @date: 2018/11/2
+     * 十六进制字符串转二进制字符串
+     *
+     * @param hex hex
+     * @return <code>byte[]</code>
      */
     private static byte[] fromHex(String hex) {
         byte[] binary = new byte[hex.length() / 2];
@@ -78,13 +73,11 @@ public class PBKDF2Util {
         return binary;
     }
 
-
     /**
-     * @auther: Ragty
-     * @describe: 二进制字符串转十六进制字符串
-     * @param: [array]
-     * @return: java.lang.String
-     * @date: 2018/11/2
+     * 二进制字符串转十六进制字符串
+     *
+     * @param array array
+     * @return <code>String</code>
      */
     private static String toHex(byte[] array) {
         BigInteger bi = new BigInteger(1, array);
