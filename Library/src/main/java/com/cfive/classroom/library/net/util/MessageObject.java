@@ -9,12 +9,15 @@ public class MessageObject implements Serializable {
     private String count;
     private String message;
 
-    public MessageObject(String stuNo, String name, String code, String message,String count) {
+    private boolean state;
+
+    public MessageObject(String stuNo, String name, String code, String message,String count,boolean state) {
         this.stuNo = stuNo;
         this.stuName = name;
         this.code = code;
         this.message = message;
         this.count = count;
+        this.state=state;
     }
 
     public String getStuNo() {
@@ -55,5 +58,13 @@ public class MessageObject implements Serializable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean isState() {
+        return state;
+    }
+
+    public void setState(boolean state) {
+        this.state = state;
     }
 }
