@@ -1,15 +1,12 @@
 package com.cfive.classroom.library.net;
 
-import com.cfive.classroom.library.net.gzw.MessageObject;
-import com.cfive.classroom.library.net.gzw.ReceiveListener;
-import com.cfive.classroom.library.net.gzw.StudentNet;
-import com.cfive.classroom.library.net.gzw.TeacherNet;
+import com.cfive.classroom.library.net.util.MessageObject;
+import com.cfive.classroom.library.net.util.ReceiveListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 public class StudentTest {
     private static final Logger LOGGER = LogManager.getLogger();

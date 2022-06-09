@@ -1,17 +1,19 @@
-package com.cfive.classroom.library.net.gzw;
+package com.cfive.classroom.library.net;
 
+import com.cfive.classroom.library.net.util.MessageObject;
+import com.cfive.classroom.library.net.util.ReceiveListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.net.Socket;
 
-public class RecieveThread extends Thread {
+public class ReceiveThread extends Thread {
     private static final Logger LOGGER = LogManager.getLogger();
     private Socket socket;
     private ReceiveListener receiveListener;
     private MessageObject messageObject;
-    public RecieveThread(Socket socket) {
+    public ReceiveThread(Socket socket) {
         this.socket = socket;
     }
     public void setOnReceiveListener(ReceiveListener receiveListener) {

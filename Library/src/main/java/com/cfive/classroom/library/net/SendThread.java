@@ -1,14 +1,13 @@
-package com.cfive.classroom.library.net.gzw;
+package com.cfive.classroom.library.net;
 
+import com.cfive.classroom.library.net.util.MessageObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class SendThread extends Thread{
     private static final Logger LOGGER = LogManager.getLogger();
