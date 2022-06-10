@@ -301,7 +301,9 @@ public class DatabaseHelper {
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 preparedStatement.setLong(1, courID);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    students.add(StudentOA.select(resultSet.getLong("stuID")));
+                    while (resultSet.next()) {
+                        students.add(StudentOA.select(resultSet.getLong("stuID")));
+                    }
                 }
             }
         }
