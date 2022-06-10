@@ -40,28 +40,28 @@ public class SignIn {
                 if(sigIn.workerNo.length()==0||sigIn.password.length()==0){         //判断用户名和密码是否为空
                     JOptionPane.showMessageDialog(null,"用户名和密码不能为空","提示！！",JOptionPane.ERROR_MESSAGE);
                 }else{
+                    //根据输入的工号和密码利用加盐位进行判断
                     try {
                         if(DatabaseHelper.checkPasswdInTeacher(Long.valueOf(sigIn.workerNo), sigIn.password)){
                             ClassList classList = new ClassList();
-                            String test=sigIn.workerNo_input.getText().toString();
-                            classList.start(test);
+                            classList.start(sigIn.workerNo);    //将工号传参到下一个界面
                             frame.setVisible(false);
                         }else {
                             JOptionPane.showMessageDialog(null,"密码错误，请重新输入","错误！！",JOptionPane.ERROR_MESSAGE);
                         }
                     } catch (NoConfigException ex) {
-                        throw new RuntimeException(ex);
+                        JOptionPane.showMessageDialog(null,"没有数据库配置文件","警告",JOptionPane.ERROR_MESSAGE);
+                        LOGGER.error("No configuration", e);
                     } catch (SQLException ex) {
-                        throw new RuntimeException(ex);
+                        JOptionPane.showMessageDialog(null,"数据库出错","警告",JOptionPane.ERROR_MESSAGE);
+                        LOGGER.error("SQLException",e);
                     } catch (DependenciesNotFoundException ex) {
-                        throw new RuntimeException(ex);
+                        LOGGER.error("DependenciesNotFoundException",e);
                     } catch (NoSuchAlgorithmException ex) {
-                        throw new RuntimeException(ex);
+                        LOGGER.error("NoSuchAlgorithmException",e);
                     } catch (InvalidKeySpecException ex) {
-                        throw new RuntimeException(ex);
+                        LOGGER.error("InvalidKeySpecException",e);
                     }
-
-
                 }
 
             }

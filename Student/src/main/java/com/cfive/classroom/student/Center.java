@@ -4,6 +4,7 @@ import com.cfive.classroom.library.database.DatabaseHelper;
 import com.cfive.classroom.library.database.util.NoConfigException;
 import com.cfive.classroom.library.net.StudentNet;
 import com.cfive.classroom.library.net.util.MessageObject;
+import com.cfive.classroom.library.net.util.MessageType;
 import com.cfive.classroom.library.net.util.ReceiveListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -84,7 +85,7 @@ public class Center {
                 studentNet.setOnReceiveListener(new ReceiveListener() {
                     @Override
                     public void onReceive(MessageObject messageObject) {
-                        if (messageObject.getCode().equals(signInCode)) {
+                        if (messageObject.getMessageType()==MessageType.CheckIn&&messageObject.getCode().equals(signInCode)) {
                             JOptionPane.showMessageDialog(null, "签到成功");
                         } else {
                             JOptionPane.showMessageDialog(null,"签到失败");
@@ -98,7 +99,7 @@ public class Center {
         raiseHandButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                messageObject = new MessageObject(stuNo, stuName, null, null, null,true);
+                messageObject = new MessageObject(stuNo, stuName, null, null, null, MessageType.RaiseHand);
                 studentNet.sendMessageThread(messageObject);
                 JOptionPane.showMessageDialog(null,"你已经向老师举手");
             }
@@ -107,7 +108,7 @@ public class Center {
         studentNet.setOnReceiveListener(new ReceiveListener() {
             @Override
             public void onReceive(MessageObject messageObject) {
-                if (messageObject.isState()) {
+                if (messageObject.getMessageType()==MessageType.Select) {
                     JOptionPane.showMessageDialog(null,"恭喜以下同学被选中:\n\t\n"+messageObject.getCount());
                 }
             }

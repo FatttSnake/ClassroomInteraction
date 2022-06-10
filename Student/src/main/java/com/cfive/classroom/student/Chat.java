@@ -3,6 +3,7 @@ package com.cfive.classroom.student;
 import com.cfive.classroom.library.net.ReceiveThread;
 import com.cfive.classroom.library.net.StudentNet;
 import com.cfive.classroom.library.net.util.MessageObject;
+import com.cfive.classroom.library.net.util.MessageType;
 import com.cfive.classroom.library.net.util.ReceiveListener;
 
 import javax.swing.*;
@@ -28,10 +29,10 @@ public class Chat {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(String.valueOf(sendText.getText())!=null) {
-                    studentNet.sendMessageThread(new MessageObject(stuNo, stuName, null, String.valueOf(sendText.getText()), null, false));
+                    studentNet.sendMessageThread(new MessageObject(stuNo, stuName, null, String.valueOf(sendText.getText()), null, MessageType.Chat));
                 }
                 else{
-                    JOptionPane.showMessageDialog(null,"无发送内容");
+                    JOptionPane.showMessageDialog(null,"无发送内容","错误！",JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -39,7 +40,9 @@ public class Chat {
         studentNet.setOnReceiveListener(new ReceiveListener() {
             @Override
             public void onReceive(MessageObject messageObject) {
-                receiveText.setText("教师：\n"+messageObject.getMessage());
+                if(messageObject.getMessageType()==MessageType.ChatToAll){
+                    receiveText.setText("教师：\n"+messageObject.getMessage());
+                }
             }
         });
     }
