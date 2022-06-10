@@ -1,5 +1,7 @@
 package com.cfive.classroom.teacher;
 
+import com.cfive.classroom.library.net.TeacherNet;
+
 import javax.swing.*;
 
 public class SendMessage {
@@ -7,9 +9,10 @@ public class SendMessage {
 
     private static  JFrame frame = new JFrame("SendMessage");
     private JPanel rootPanel;
-    private JTextPane textPane1;
-    private JTextArea textArea1;
+    private JTextArea messageInput;
     private JButton bt_send;
+    private JTextArea messageShow;
+    private TeacherNet teacherNet;
 
     public static void main(String[] args) {
         frame.setContentPane(sendMessage.rootPanel);
@@ -18,11 +21,13 @@ public class SendMessage {
         frame.setVisible(false);
     }
 
-    public  void start(){
+    public  void start(TeacherNet teacherNet1){
         frame.setContentPane(sendMessage.rootPanel);
-        frame.setBounds(600,400,600,400);
+        frame.setSize(600,400);
+        frame.setLocationRelativeTo(null);
         frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
+        sendMessage.teacherNet = teacherNet1;
     }
 }

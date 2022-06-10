@@ -32,7 +32,7 @@
             </constraints>
             <properties>
               <font name="Microsoft YaHei" size="28" style="1"/>
-              <text value="选择您所要进入的班级"/>
+              <text value="选择您所要进入的课程"/>
             </properties>
           </component>
           <vspacer id="3777c">

@@ -31,7 +31,7 @@ public class Attendance {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 int row = table_undo.getSelectedRow();
-               // int col = table_undo.getSelectedColumn();
+                // int col = table_undo.getSelectedColumn();
                 String newString=table_undo.getValueAt(row,2).toString();
                 attendance.test.setText(newString);
                 LOGGER.info(newString);
@@ -45,7 +45,8 @@ public class Attendance {
 
     public static void main(String[] args) {
         frame.setContentPane(attendance.rootPanel);
-        frame.setBounds(600,400,600,400);
+        frame.setSize(600,400);
+        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(false);
@@ -53,7 +54,8 @@ public class Attendance {
     }
     public  void start(){
         frame.setContentPane(attendance.rootPanel);
-        frame.setBounds(600,400,600,400);
+        frame.setSize(600,400);
+        frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         DefaultTableModel alreadyTableModel=new DefaultTableModel(data,t1_columnTitle);
         alreadyTableModel.setColumnCount(3);
