@@ -1,5 +1,6 @@
 package com.cfive.classroom.teacher;
 
+import com.cfive.classroom.library.net.TeacherNet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,6 +23,7 @@ public class Attendance {
     private JTable table_already;
     private JTable table_undo;
     private JLabel test;
+    private TeacherNet teacherNet;
     private static final Logger LOGGER= LogManager.getLogger();
 
     public Attendance() {
@@ -52,11 +54,12 @@ public class Attendance {
         frame.setVisible(false);
 
     }
-    public  void start(){
+    public  void start(TeacherNet teacherNet1){
         frame.setContentPane(attendance.rootPanel);
         frame.setSize(600,400);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
+        attendance.teacherNet=teacherNet1;
         DefaultTableModel alreadyTableModel=new DefaultTableModel(data,t1_columnTitle);
         alreadyTableModel.setColumnCount(3);
         attendance.table_already.setModel(alreadyTableModel);

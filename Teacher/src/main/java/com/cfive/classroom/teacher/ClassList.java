@@ -4,87 +4,72 @@ import com.cfive.classroom.library.database.DatabaseHelper;
 import com.cfive.classroom.library.database.bean.Course;
 import com.cfive.classroom.library.database.util.DependenciesNotFoundException;
 import com.cfive.classroom.library.database.util.NoConfigException;
-import com.cfive.classroom.library.net.TeacherNet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class ClassList {
-    private static final ClassList classlist=new ClassList();
+    private static final ClassList classList = new ClassList();
     private static JFrame frame = new JFrame("课堂互动通-教师端");
     private JPanel rootPanel1;
-    private JButton Button1;
+    private JButton bt_enter;
     private JComboBox comboBox;
     private JPanel selectPanel;
-    private String workerNo, subName;
-    private List<Course> courseList;
+    private String workerNo,courseID,subName;
+    private final List<Course> courseList = new ArrayList<>();
     private static final Logger LOGGER = LogManager.getLogger();
-    private TeacherNet teacherNet;
+
     public ClassList() {
-        Button1.addActionListener(new ActionListener() {
+        bt_enter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                subName =(String) classlist.comboBox.getSelectedItem();
-                //从配置文件中读取端口号并传参到主界面
-                Properties properties = new Properties();
-                try {
-                    properties.load(new BufferedReader(new FileReader("Teacher/src/main/connect.properties")));
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                if (!Objects.equals(classList.comboBox.getSelectedItem(), "--请选择--")) {          //判断是否有选择内容
+                    String select = classList.comboBox.getSelectedItem().toString();
+                    courseID = select.substring(0, select.indexOf(" "));
+                    subName=select.substring(select.indexOf(" ")+1);
+                    LOGGER.debug(courseID+" "+subName);
+                    Main.start(workerNo,courseID,subName);
+                } else {
+                    JOptionPane.showMessageDialog(null, "请选择您想要进入的课程", "温馨提示！", JOptionPane.WARNING_MESSAGE);
                 }
-                LOGGER.info(properties.getProperty("port"));
-                try {
-                    teacherNet = new TeacherNet(Integer.valueOf(properties.getProperty("port")));
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-                if(subName!=null){
-                    Main.start(classlist.workerNo,classlist.subName,teacherNet);
-                }
-                frame.setVisible(false);
             }
         });
     }
 
     public static void main(String[] args) {
-        frame.setContentPane(classlist.rootPanel1);
+        frame.setContentPane(classList.rootPanel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(false);
 
     }
-    public  void start(String workerNo){
-        frame.setContentPane(classlist.rootPanel1);
-        frame.setSize(600,400);
+
+    public void start(String workerNo) {
+        frame.setContentPane(classList.rootPanel1);
+        frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
-        classlist.workerNo=workerNo;
-        //添加下拉列表的内容：该教师所教的科目名
+        classList.workerNo = workerNo;
+        //添加下拉列表的内容：该教师所教的科目名以及其课程编号
         try {
-            courseList=DatabaseHelper.queryCourses(Long.valueOf(classlist.workerNo));
-            if(courseList!=null){
-                Iterator<Course> iterator = courseList.iterator();  //使用迭代器进行遍历
-                while(iterator.hasNext()){
-                    String subName = iterator.next().getSubject().getSubName();
-                    classlist.comboBox.addItem(subName);
-                }
+            classList.comboBox.addItem("--请选择--");
+            courseList.addAll(DatabaseHelper.queryCourses(Long.parseLong(classList.workerNo)));
+            for (Course course : courseList) {
+                classList.comboBox.addItem(course.getCourID()+" "+course.getSubject().getSubName());
             }
         } catch (NoConfigException e) {
-            throw new RuntimeException(e);
+            JOptionPane.showMessageDialog(null, "没有数据库配置文件", "警告", JOptionPane.ERROR_MESSAGE);
+            LOGGER.error("No configuration", e);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            JOptionPane.showMessageDialog(null, "数据库出错", "警告", JOptionPane.ERROR_MESSAGE);
+            LOGGER.error("SQLException", e);
         } catch (DependenciesNotFoundException e) {
-            throw new RuntimeException(e);
+            LOGGER.error("DependenciesNotFoundException", e);
         }
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);

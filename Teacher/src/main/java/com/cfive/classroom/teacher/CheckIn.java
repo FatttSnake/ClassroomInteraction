@@ -1,5 +1,8 @@
 package com.cfive.classroom.teacher;
 
+import com.cfive.classroom.library.net.TeacherNet;
+import com.cfive.classroom.library.net.util.MessageObject;
+import com.cfive.classroom.library.net.util.MessageType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,16 +23,18 @@ public class CheckIn {
     private JButton bt_confim;
     private JButton bt_cancel;
     private String n1,n2,n3,n4,number;
+    private TeacherNet teacherNet;
     private static final Logger LOGGER= LogManager.getLogger();
 
     public CheckIn() {
-        //限制签到码的长度
+        //取消按钮的监听
         bt_cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
+                frame.dispose();
             }
         });
+        //限制签到码的长度
         textField1.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -70,7 +75,15 @@ public class CheckIn {
             @Override
             public void actionPerformed(ActionEvent e) {
                 number=n1+n2+n3+n4;
-                LOGGER.info(number);
+                if(number!=null){
+                    LOGGER.info(number);
+                    teacherNet.sendAllMessage(new MessageObject(null,null,number,null,null, MessageType.CheckIn));
+                    JOptionPane.showMessageDialog(null,"签到码发布成功","消息",JOptionPane.INFORMATION_MESSAGE);
+                    frame.dispose();
+                }else {
+                    JOptionPane.showMessageDialog(null,"签到码不能为空","错误",JOptionPane.ERROR_MESSAGE);
+                }
+
             }
         });
     }
@@ -81,11 +94,12 @@ public class CheckIn {
         frame.pack();
         frame.setVisible(false);
     }
-    public  void start(){
+    public  void start(TeacherNet teacherNet1){
         frame.setContentPane(checkIn.rootPanel);
         frame.setSize(600,400);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
+        checkIn.teacherNet=teacherNet1;
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }
