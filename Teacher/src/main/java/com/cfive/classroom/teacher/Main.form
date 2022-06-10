@@ -24,7 +24,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="c9e8c" class="javax.swing.JTextField" binding="className">
+              <component id="c9e8c" class="javax.swing.JTextField" binding="subName_show">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="9" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
@@ -41,7 +41,7 @@
                 </constraints>
                 <properties>
                   <font name="Microsoft YaHei" size="24" style="1"/>
-                  <text value="班级："/>
+                  <text value="课程："/>
                 </properties>
               </component>
               <hspacer id="41901">
@@ -115,7 +115,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="2d479" class="javax.swing.JTextField" binding="workNo">
+                  <component id="2d479" class="javax.swing.JTextField" binding="workNo_show">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>

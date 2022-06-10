@@ -33,10 +33,10 @@ public class CheckIn {
         textField1.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-               n1=textField1.getText();
-               if(n1.length()>=1){
-                   e.consume();
-               }
+                n1=textField1.getText();
+                if(n1.length()>=1){
+                    e.consume();
+                }
             }
         });
         textField2.addKeyListener(new KeyAdapter() {
@@ -83,9 +83,10 @@ public class CheckIn {
     }
     public  void start(){
         frame.setContentPane(checkIn.rootPanel);
-        frame.setBounds(600,400,600,400);
+        frame.setSize(600,400);
+        frame.setLocationRelativeTo(null);
         frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }
 }
