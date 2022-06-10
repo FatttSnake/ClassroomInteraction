@@ -59,14 +59,19 @@ public class DatabaseTest {
 
     @Test
     void deleteFacultyTest() throws NoConfigException, SQLException {
-        LOGGER.debug(DatabaseHelper.deleteFromFaculty("计算机学院"));
-        LOGGER.debug(DatabaseHelper.deleteFromFaculty(18));
+//        LOGGER.debug(DatabaseHelper.deleteFromFaculty("计算机学院"));
+        LOGGER.debug(DatabaseHelper.deleteFromFaculty(19));
     }
 
     @Test
     void selectFromFacultyTest() throws NoConfigException, SQLException {
         LOGGER.debug(DatabaseHelper.selectFromFaculty("计算机学院"));
         LOGGER.debug(DatabaseHelper.selectFromFaculty(6));
+    }
+
+    @Test
+    void selectAllFromStudentTest() throws NoConfigException, SQLException {
+        DatabaseHelper.selectAllFromStudent().forEach(LOGGER::debug);
     }
 
     @Test

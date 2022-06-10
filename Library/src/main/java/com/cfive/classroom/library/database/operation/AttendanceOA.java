@@ -26,11 +26,11 @@ public class AttendanceOA {
                         Subject subject = new Subject(resultSet.getInt("subID"), resultSet.getString("subName"));
                         Faculty faculty = new Faculty(resultSet.getInt("facID"), resultSet.getString("facName"));
                         Teacher teacher = new Teacher(resultSet.getLong("tchID"), resultSet.getString("tchName"), resultSet.getString("tchGender").equals("m") ? Gender.m : Gender.f, faculty, resultSet.getString("teacher.passwd"), resultSet.getString("teacher.salt"));
-                        Course course = new Course(resultSet.getLong("courID"), subject, teacher, LocalDateTime.ofEpochSecond(resultSet.getLong("courTimeFrom"), 0, ZoneOffset.UTC), LocalDateTime.ofEpochSecond(resultSet.getLong("courTimeEnd"), 0, ZoneOffset.UTC));
+                        Course course = new Course(resultSet.getLong("courID"), subject, teacher, LocalDateTime.ofEpochSecond(resultSet.getTimestamp("courTimeFrom").getTime() / 1000, 0, ZoneOffset.of("+8")), LocalDateTime.ofEpochSecond(resultSet.getTimestamp("courTimeEnd").getTime() / 1000, 0, ZoneOffset.of("+8")));
                         Major major = new Major(resultSet.getInt("majorID"), resultSet.getString("majorName"), faculty);
                         AClass aClass = new AClass(resultSet.getLong("classID"), major, resultSet.getInt("grade"), resultSet.getInt("classNum"));
                         Student student = new Student(resultSet.getLong("stuID"), resultSet.getString("stuName"), resultSet.getString("stuGender").equals("m") ? Gender.m : Gender.f, aClass, resultSet.getString("student.passwd"), resultSet.getString("student.salt"));
-                        attendances.add(new Attendance(resultSet.getString("attID"), course, student, LocalDateTime.ofEpochSecond(resultSet.getLong("attTime"), 0, ZoneOffset.UTC), AttStatus.fromString(resultSet.getString("attStatus"))));
+                        attendances.add(new Attendance(resultSet.getString("attID"), course, student, LocalDateTime.ofEpochSecond(resultSet.getTimestamp("attTime").getTime() / 1000, 0, ZoneOffset.of("+8")), AttStatus.fromString(resultSet.getString("attStatus"))));
                     }
                 }
             }
@@ -48,11 +48,11 @@ public class AttendanceOA {
                         Subject subject = new Subject(resultSet.getInt("subID"), resultSet.getString("subName"));
                         Faculty faculty = new Faculty(resultSet.getInt("facID"), resultSet.getString("facName"));
                         Teacher teacher = new Teacher(resultSet.getLong("tchID"), resultSet.getString("tchName"), resultSet.getString("tchGender").equals("m") ? Gender.m : Gender.f, faculty, resultSet.getString("teacher.passwd"), resultSet.getString("teacher.salt"));
-                        Course course = new Course(resultSet.getLong("courID"), subject, teacher, LocalDateTime.ofEpochSecond(resultSet.getLong("courTimeFrom"), 0, ZoneOffset.UTC), LocalDateTime.ofEpochSecond(resultSet.getLong("courTimeEnd"), 0, ZoneOffset.UTC));
+                        Course course = new Course(resultSet.getLong("courID"), subject, teacher, LocalDateTime.ofEpochSecond(resultSet.getTimestamp("courTimeFrom").getTime() / 1000, 0, ZoneOffset.of("+8")), LocalDateTime.ofEpochSecond(resultSet.getTimestamp("courTimeEnd").getTime() / 1000, 0, ZoneOffset.of("+8")));
                         Major major = new Major(resultSet.getInt("majorID"), resultSet.getString("majorName"), faculty);
                         AClass aClass = new AClass(resultSet.getLong("classID"), major, resultSet.getInt("grade"), resultSet.getInt("classNum"));
                         Student student = new Student(resultSet.getLong("stuID"), resultSet.getString("stuName"), resultSet.getString("stuGender").equals("m") ? Gender.m : Gender.f, aClass, resultSet.getString("student.passwd"), resultSet.getString("student.salt"));
-                        return new Attendance(resultSet.getString("attID"), course, student, LocalDateTime.ofEpochSecond(resultSet.getLong("attTime"), 0, ZoneOffset.UTC), AttStatus.fromString(resultSet.getString("attStatus")));
+                        return new Attendance(resultSet.getString("attID"), course, student, LocalDateTime.ofEpochSecond(resultSet.getTimestamp("attTime").getTime() / 1000, 0, ZoneOffset.of("+8")), AttStatus.fromString(resultSet.getString("attStatus")));
                     }
                 }
             }
@@ -63,17 +63,21 @@ public class AttendanceOA {
     public static Attendance insert(long courID, long stuID, @Nullable LocalDateTime attTime, AttStatus attStatus) throws NoConfigException, SQLException, AlreadyExistsException, DependenciesNotFoundException, InsertException {
         if (!CourseOA.isExists(courID) || !StudentOA.isExists(stuID)) throw new DependenciesNotFoundException();
 
-        String sql = "INSERT INTO course VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO attendance VALUES (?,?,?,?,?)";
         try (Connection connection = PoolHelper.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 UUID uuid;
                 do {
                     uuid = UUID.randomUUID();
-                } while (!isExists(uuid.toString()));
+                } while (isExists(uuid.toString()));
                 preparedStatement.setString(1, uuid.toString());
                 preparedStatement.setLong(2, courID);
                 preparedStatement.setLong(3, stuID);
-                preparedStatement.setLong(4, attTime.toEpochSecond(ZoneOffset.UTC));
+                if (attTime == null) {
+                    preparedStatement.setTimestamp(4, null);
+                } else {
+                    preparedStatement.setTimestamp(4, new Timestamp(attTime.toEpochSecond(ZoneOffset.of("+8")) * 1000));
+                }
                 preparedStatement.setString(5, attStatus.name());
                 if (preparedStatement.executeUpdate() == 1) {
                     return new Attendance(uuid.toString(), CourseOA.select(courID), StudentOA.select(stuID), attTime, attStatus);

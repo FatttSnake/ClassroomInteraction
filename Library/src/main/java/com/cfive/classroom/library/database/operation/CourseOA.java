@@ -21,7 +21,7 @@ public class CourseOA {
                         Subject subject = new Subject(resultSet.getInt("subID"), resultSet.getString("subName"));
                         Faculty faculty = new Faculty(resultSet.getInt("facID"), resultSet.getString("facName"));
                         Teacher teacher = new Teacher(resultSet.getLong("tchID"), resultSet.getString("tchName"), resultSet.getString("tchGender").equals("m") ? Gender.m : Gender.f, faculty, resultSet.getString("passwd"), resultSet.getString("salt"));
-                        courses.add(new Course(resultSet.getLong("courID"), subject, teacher, LocalDateTime.ofEpochSecond(resultSet.getLong("courTimeFrom"), 0, ZoneOffset.UTC), LocalDateTime.ofEpochSecond(resultSet.getLong("courTimeEnd"), 0, ZoneOffset.UTC)));
+                        courses.add(new Course(resultSet.getLong("courID"), subject, teacher, LocalDateTime.ofEpochSecond(resultSet.getTimestamp("courTimeFrom").getTime() / 1000, 0, ZoneOffset.of("+8")), LocalDateTime.ofEpochSecond(resultSet.getTimestamp("courTimeEnd").getTime() / 1000, 0, ZoneOffset.of("+8"))));
                     }
                 }
             }
@@ -30,7 +30,7 @@ public class CourseOA {
     }
 
     public static Course select(long courID) throws SQLException, NoConfigException {
-        String sql = "SELECT courID,courTimeFrom,courTimeEnd,subject.subID,teacher.tchID,tchName,tchGender,passwd,salt,faculty.facID,facName FROM course,subject,teacher,faculty where course.subID=subject.subID AND course.tchID=teacher.tchID AND teacher.facID=faculty.facID AND courID=?";
+        String sql = "SELECT courID,courTimeFrom,courTimeEnd,subject.subID,subName,teacher.tchID,tchName,tchGender,passwd,salt,faculty.facID,facName FROM course,subject,teacher,faculty where course.subID=subject.subID AND course.tchID=teacher.tchID AND teacher.facID=faculty.facID AND courID=?";
         try (Connection connection = PoolHelper.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 preparedStatement.setLong(1, courID);
@@ -39,7 +39,7 @@ public class CourseOA {
                         Subject subject = new Subject(resultSet.getInt("subID"), resultSet.getString("subName"));
                         Faculty faculty = new Faculty(resultSet.getInt("facID"), resultSet.getString("facName"));
                         Teacher teacher = new Teacher(resultSet.getLong("tchID"), resultSet.getString("tchName"), resultSet.getString("tchGender").equals("m") ? Gender.m : Gender.f, faculty, resultSet.getString("passwd"), resultSet.getString("salt"));
-                        return new Course(resultSet.getLong("courID"), subject, teacher, LocalDateTime.ofEpochSecond(resultSet.getLong("courTimeFrom"), 0, ZoneOffset.UTC), LocalDateTime.ofEpochSecond(resultSet.getLong("courTimeEnd"), 0, ZoneOffset.UTC));
+                        return new Course(resultSet.getLong("courID"), subject, teacher, LocalDateTime.ofEpochSecond(resultSet.getTimestamp("courTimeFrom").getTime() / 1000, 0, ZoneOffset.of("+8")), LocalDateTime.ofEpochSecond(resultSet.getTimestamp("courTimeEnd").getTime() / 1000, 0, ZoneOffset.of("+8")));
                     }
                 }
             }
@@ -57,8 +57,8 @@ public class CourseOA {
                 preparedStatement.setLong(1, courID);
                 preparedStatement.setInt(2, subID);
                 preparedStatement.setLong(3, tchID);
-                preparedStatement.setLong(4, courTimeStart.toEpochSecond(ZoneOffset.UTC));
-                preparedStatement.setLong(5, courTimeEnd.toEpochSecond(ZoneOffset.UTC));
+                preparedStatement.setTimestamp(4, new Timestamp(courTimeStart.toEpochSecond(ZoneOffset.of("+8")) * 1000));
+                preparedStatement.setTimestamp(5, new Timestamp(courTimeEnd.toEpochSecond(ZoneOffset.of("+8")) * 1000));
                 if (preparedStatement.executeUpdate() == 1) {
                     return new Course(courID, SubjectOA.select(subID), TeacherOA.select(tchID), courTimeStart, courTimeEnd);
                 } else {

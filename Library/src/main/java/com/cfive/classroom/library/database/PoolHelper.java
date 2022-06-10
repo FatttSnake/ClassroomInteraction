@@ -14,7 +14,7 @@ import java.util.Properties;
 public class PoolHelper {
     private static final Logger LOGGER = LogManager.getLogger();
     private static HikariDataSource hikariDataSource;
-    private static String JDBC_URL = "jdbc:mysql://%s:%s/%s?useSSL=false&characterEncoding=utf8";
+    private static String JDBC_URL = "jdbc:mysql://%s:%s/%s?serverTimezone=Asia/Shanghai&useSSL=false&characterEncoding=utf8";
     private static String JDBC_USERNAME;
     private static String JDBC_PASSWORD;
     private static final String CACHE_PREP_STMTS = "true";
