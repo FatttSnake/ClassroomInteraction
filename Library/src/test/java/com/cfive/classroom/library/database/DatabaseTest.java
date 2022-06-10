@@ -2,6 +2,7 @@ package com.cfive.classroom.library.database;
 
 import com.cfive.classroom.library.database.bean.Faculty;
 import com.cfive.classroom.library.database.util.AlreadyExistsException;
+import com.cfive.classroom.library.database.util.DependenciesNotFoundException;
 import com.cfive.classroom.library.database.util.InsertException;
 import com.cfive.classroom.library.database.util.NoConfigException;
 import org.apache.logging.log4j.LogManager;
@@ -72,6 +73,11 @@ public class DatabaseTest {
     @Test
     void selectAllFromStudentTest() throws NoConfigException, SQLException {
         DatabaseHelper.selectAllFromStudent().forEach(LOGGER::debug);
+    }
+
+    @Test
+    void selectStudentsFromCourseTest() throws NoConfigException, SQLException, DependenciesNotFoundException {
+        DatabaseHelper.selectStudentsFromCourse(2).forEach(LOGGER::debug);
     }
 
     @Test
