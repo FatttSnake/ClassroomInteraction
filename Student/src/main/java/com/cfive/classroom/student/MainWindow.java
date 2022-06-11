@@ -33,8 +33,9 @@ public class MainWindow{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(check()){
-                    Center center = new Center();
-                    center.start(String.valueOf(stuNoText.getText()));
+                    LOGGER.info("new Center");
+                    new Center().start(stuNoText.getText());
+                    LOGGER.info("center.start");
                     frame.dispose();
                 }
             }
