@@ -323,6 +323,24 @@ public class DatabaseHelper {
         }
     }
 
+    public static List<Attendance> selectAttendanceByCourse(long courID) throws NoConfigException, SQLException, DependenciesNotFoundException {
+        if (!isExistsInCourse(courID)) throw new DependenciesNotFoundException();
+
+        ArrayList<Attendance> attendances = new ArrayList<>();
+        String sql = "SELECT attID FROM attendance WHERE courID=?";
+        try (Connection connection = PoolHelper.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setLong(1, courID);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        attendances.add(AttendanceOA.select(resultSet.getString("attID")));
+                    }
+                }
+            }
+        }
+        return attendances;
+    }
+
     public static void close() {
         PoolHelper.close();
     }

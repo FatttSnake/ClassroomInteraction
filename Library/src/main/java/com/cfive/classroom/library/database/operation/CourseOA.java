@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CourseOA {
     public static List<Course> selectAll() throws NoConfigException, SQLException {
-        String sql = "SELECT courID,courTimeFrom,courTimeEnd,subject.subID,teacher.tchID,tchName,tchGender,passwd,salt,faculty.facID,facName FROM course,subject,teacher,faculty where course.subID=subject.subID AND course.tchID=teacher.tchID AND teacher.facID=faculty.facID ORDER BY courID";
+        String sql = "SELECT courID,courTimeFrom,courTimeEnd,subject.subID,subName,teacher.tchID,tchName,tchGender,passwd,salt,faculty.facID,facName FROM course,subject,teacher,faculty where course.subID=subject.subID AND course.tchID=teacher.tchID AND teacher.facID=faculty.facID ORDER BY courID";
         ArrayList<Course> courses = new ArrayList<>();
         try (Connection connection = PoolHelper.getConnection()) {
             try (Statement statement = connection.createStatement()) {
