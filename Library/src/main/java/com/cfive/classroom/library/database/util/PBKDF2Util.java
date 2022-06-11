@@ -8,6 +8,12 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
+/**
+ * PBKDF2 密码加密工具类
+ *
+ * @author FatttSnake
+ * @version 1.0
+ */
 public class PBKDF2Util {
     public static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA1";
 
