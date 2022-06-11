@@ -29,7 +29,8 @@ public class ChangePassword {
             if(check()){
                 //将修改后的密码在数据表修改
                 try {
-                    DatabaseHelper.changePasswdInTeacher(Long.valueOf(workNo_input.getText()),newPw_ok.getPassword().toString());
+                    DatabaseHelper.changePasswdInTeacher(Long.valueOf(workNo_input.getText()),String.valueOf(newPw_ok.getPassword()));
+                    LOGGER.debug(String.valueOf(newPw_ok.getPassword()));
                 } catch (NoConfigException ex) {
                     JOptionPane.showMessageDialog(null,"没有数据库配置文件","警告",JOptionPane.ERROR_MESSAGE);
                     LOGGER.error("No configuration", e);

@@ -18,10 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class Main {
     private static final Main main = new Main();
@@ -36,7 +33,7 @@ public class Main {
     private JTextField workNo_show;
     private JTextField subName_show;
     private String workNo,courseID;
-    private List<Student> studentList;
+    private final List<Student> studentList = new ArrayList<>();;
     private String[] student;
     private TeacherNet teacherNet;
     private final Logger LOGGER = LogManager.getLogger();
@@ -82,7 +79,7 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Attendance attendance = new Attendance();
-                attendance.start(teacherNet);
+                attendance.start(teacherNet,courseID);
             }
         });
 
@@ -100,7 +97,7 @@ public class Main {
                 String[] arr = new String[i];   //new一个该数长度的String数组
 
                 try {
-                    studentList = DatabaseHelper.selectStudentsFromCourse(Long.parseLong(courseID));
+                    studentList.addAll(DatabaseHelper.selectStudentsFromCourse(Long.parseLong(courseID)));
                     if (!studentList.isEmpty()) {       //判断是否获取到学生名单
                         LOGGER.info("学生列表" + studentList);
                         for (int j = 0; j < i; ) {
@@ -128,7 +125,7 @@ public class Main {
                         }
                         JOptionPane.showMessageDialog(null, "恭喜以下同学被选中：\n\t\n" + count);
                         //将选人结果群发出去
-                        teacherNet.sendAllMessage(new MessageObject(null, null, null, null, count, MessageType.Select));
+                        teacherNet.sendAllMessage(new MessageObject(null, null, null, null, count, null,MessageType.Select));
                     }else {
                         JOptionPane.showMessageDialog(null, "学生名单未导入", "错误", JOptionPane.ERROR_MESSAGE);
                     }
