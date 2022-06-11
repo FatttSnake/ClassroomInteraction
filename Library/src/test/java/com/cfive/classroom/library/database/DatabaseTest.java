@@ -9,6 +9,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 import java.util.List;
 import java.util.UUID;
@@ -78,6 +80,17 @@ public class DatabaseTest {
     @Test
     void selectStudentsFromCourseTest() throws NoConfigException, SQLException, DependenciesNotFoundException {
         DatabaseHelper.selectStudentsFromCourse(2).forEach(LOGGER::debug);
+    }
+
+    @Test
+    void checkPasswdInTeacherTest() throws NoConfigException, SQLException, DependenciesNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException {
+        LOGGER.debug(DatabaseHelper.checkPasswdInTeacher(1002, "10191019"));
+        LOGGER.debug(DatabaseHelper.changePasswdInTeacher(1002, "10191019"));
+    }
+
+    @Test
+    void selectAttendanceByCourseTest() throws NoConfigException, SQLException, DependenciesNotFoundException {
+        DatabaseHelper.selectAttendanceByCourse(2).forEach(LOGGER::debug);
     }
 
     @Test

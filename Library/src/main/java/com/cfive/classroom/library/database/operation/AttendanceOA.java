@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class AttendanceOA {
     public static List<Attendance> selectAll() throws NoConfigException, SQLException {
-        String sql = "SELECT attID,attTime,attStatus,student.stuID,stuName,stuGender,student.passwd,student.salt,class.classID,grade,classNum,major.majorID,majorName,course.courID,courTimeFrom,courTimeEnd,subject.subID,teacher.tchID,tchName,tchGender,teacher.passwd,teacher.salt,faculty.facID,facName FROM attendance,student,class,major,course,subject,teacher,faculty where attendance.courID=course.courID AND attendance.stuID=student.stuID AND class.classID=student.classID AND class.majorID=major.majorID AND major.facID=faculty.facID AND course.subID=subject.subID AND course.tchID=teacher.tchID AND teacher.facID=faculty.facID ORDER BY courID,attTime,attStatus";
+        String sql = "SELECT attID,attTime,attStatus,student.stuID,stuName,stuGender,student.passwd,student.salt,class.classID,grade,classNum,major.majorID,majorName,course.courID,courTimeFrom,courTimeEnd,subject.subID,subName,teacher.tchID,tchName,tchGender,teacher.passwd,teacher.salt,faculty.facID,facName FROM attendance,student,class,major,course,subject,teacher,faculty where attendance.courID=course.courID AND attendance.stuID=student.stuID AND class.classID=student.classID AND class.majorID=major.majorID AND major.facID=faculty.facID AND course.subID=subject.subID AND course.tchID=teacher.tchID AND teacher.facID=faculty.facID ORDER BY courID,attTime,attStatus";
         ArrayList<Attendance> attendances = new ArrayList<>();
         try (Connection connection = PoolHelper.getConnection()) {
             try (Statement statement = connection.createStatement()) {
@@ -39,7 +39,7 @@ public class AttendanceOA {
     }
 
     public static Attendance select(String attID) throws SQLException, NoConfigException {
-        String sql = "SELECT attID,attTime,attStatus,student.stuID,stuName,stuGender,student.passwd,student.salt,class.classID,grade,classNum,major.majorID,majorName,course.courID,courTimeFrom,courTimeEnd,subject.subID,teacher.tchID,tchName,tchGender,teacher.passwd,teacher.salt,faculty.facID,facName FROM attendance,student,class,major,course,subject,teacher,faculty where attendance.courID=course.courID AND attendance.stuID=student.stuID AND class.classID=student.classID AND class.majorID=major.majorID AND major.facID=faculty.facID AND course.subID=subject.subID AND course.tchID=teacher.tchID AND teacher.facID=faculty.facID AND attID=?";
+        String sql = "SELECT attID,attTime,attStatus,student.stuID,stuName,stuGender,student.passwd,student.salt,class.classID,grade,classNum,major.majorID,majorName,course.courID,courTimeFrom,courTimeEnd,subject.subID,subName,teacher.tchID,tchName,tchGender,teacher.passwd,teacher.salt,faculty.facID,facName FROM attendance,student,class,major,course,subject,teacher,faculty where attendance.courID=course.courID AND attendance.stuID=student.stuID AND class.classID=student.classID AND class.majorID=major.majorID AND major.facID=faculty.facID AND course.subID=subject.subID AND course.tchID=teacher.tchID AND teacher.facID=faculty.facID AND attID=?";
         try (Connection connection = PoolHelper.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 preparedStatement.setString(1, attID);
@@ -52,7 +52,7 @@ public class AttendanceOA {
                         Major major = new Major(resultSet.getInt("majorID"), resultSet.getString("majorName"), faculty);
                         AClass aClass = new AClass(resultSet.getLong("classID"), major, resultSet.getInt("grade"), resultSet.getInt("classNum"));
                         Student student = new Student(resultSet.getLong("stuID"), resultSet.getString("stuName"), resultSet.getString("stuGender").equals("m") ? Gender.m : Gender.f, aClass, resultSet.getString("student.passwd"), resultSet.getString("student.salt"));
-                        return new Attendance(resultSet.getString("attID"), course, student, LocalDateTime.ofEpochSecond(resultSet.getTimestamp("attTime").getTime() / 1000, 0, ZoneOffset.of("+8")), AttStatus.fromString(resultSet.getString("attStatus")));
+                        return new Attendance(resultSet.getString("attID"), course, student, resultSet.getTimestamp("attTime") == null ? null : LocalDateTime.ofEpochSecond(resultSet.getTimestamp("attTime").getTime() / 1000, 0, ZoneOffset.of("+8")), AttStatus.fromString(resultSet.getString("attStatus")));
                     }
                 }
             }
