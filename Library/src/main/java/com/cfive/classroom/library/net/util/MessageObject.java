@@ -3,6 +3,7 @@ package com.cfive.classroom.library.net.util;
 import com.cfive.classroom.library.database.bean.AttStatus;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 public class MessageObject implements Serializable {
     private String stuNo;
@@ -11,15 +12,18 @@ public class MessageObject implements Serializable {
     private String count;
     private String message;
     private AttStatus attStatus;
+    private LocalDateTime localDateTime;
     private MessageType messageType;
 
-    public MessageObject(String stuNo, String name, String code, String message,String count,AttStatus attStatus,MessageType messageType) {
+
+    public MessageObject(String stuNo, String name, String code, String message,String count,AttStatus attStatus,LocalDateTime localDateTime,MessageType messageType) {
         this.stuNo = stuNo;
         this.stuName = name;
         this.code = code;
         this.message = message;
         this.count = count;
         this.attStatus=attStatus;
+        this.localDateTime=localDateTime;
         this.messageType=messageType;
     }
 
@@ -61,6 +65,14 @@ public class MessageObject implements Serializable {
 
     public void setAttStatus(AttStatus attStatus) {
         this.attStatus = attStatus;
+    }
+
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
+    }
+
+    public void setLocalDateTime(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
     }
 
     public String getMessage() {
