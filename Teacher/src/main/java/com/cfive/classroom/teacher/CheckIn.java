@@ -78,7 +78,7 @@ public class CheckIn {
                 number = n1 + n2 + n3 + n4;
                 if (number != null) {
                     LOGGER.info(number);
-                    teacherNet.sendAllMessage(new MessageObject(null, null, number, null, null, null, MessageType.CheckIn));
+                    teacherNet.sendAllMessage(new MessageObject(null, null, number, null, null, null,null,MessageType.CheckIn));
                     JOptionPane.showMessageDialog(null, "签到码发布成功", "消息", JOptionPane.INFORMATION_MESSAGE);
                     frame.dispose();
                 } else {

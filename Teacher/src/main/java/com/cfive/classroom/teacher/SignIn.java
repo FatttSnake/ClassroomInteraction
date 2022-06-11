@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.NoRouteToHostException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
@@ -25,6 +26,7 @@ public class SignIn {
     private JPasswordField password_input;
     private String workerNo,password;
     private static final Logger LOGGER = LogManager.getLogger();
+    private static boolean isConnectedToDatabase = false;
     public static void main(String[] args) {
         FlatLightLaf.setup();
 
@@ -42,26 +44,32 @@ public class SignIn {
                 }else{
                     //根据输入的工号和密码利用加盐位进行判断
                     try {
-                        if(DatabaseHelper.checkPasswdInTeacher(Long.valueOf(sigIn.workerNo), sigIn.password)){
+                        if (DatabaseHelper.checkPasswdInTeacher(Long.valueOf(sigIn.workerNo), sigIn.password)) {
                             ClassList classList = new ClassList();
                             classList.start(sigIn.workerNo);    //将工号传参到下一个界面
                             frame.setVisible(false);
-                        }else {
-                            JOptionPane.showMessageDialog(null,"密码错误，请重新输入","错误！！",JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "密码错误，请重新输入", "错误！！", JOptionPane.ERROR_MESSAGE);
                         }
+                        isConnectedToDatabase = true;
                     } catch (NoConfigException ex) {
-                        JOptionPane.showMessageDialog(null,"没有数据库配置文件","警告",JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "没有数据库配置文件", "警告", JOptionPane.ERROR_MESSAGE);
                         LOGGER.error("No configuration", e);
                     } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(null,"数据库出错","警告",JOptionPane.ERROR_MESSAGE);
-                        LOGGER.error("SQLException",e);
+                        JOptionPane.showMessageDialog(null, "数据库出错", "警告", JOptionPane.ERROR_MESSAGE);
+                        LOGGER.error("SQLException", e);
                     } catch (DependenciesNotFoundException ex) {
-                        JOptionPane.showMessageDialog(null,"未查询到该数据","错误",JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "未查询到该数据", "错误", JOptionPane.ERROR_MESSAGE);
                         LOGGER.error("DependenciesNotFoundException", e);
                     } catch (NoSuchAlgorithmException ex) {
-                        LOGGER.error("NoSuchAlgorithmException",e);
+                        LOGGER.error("NoSuchAlgorithmException", e);
                     } catch (InvalidKeySpecException ex) {
-                        LOGGER.error("InvalidKeySpecException",e);
+                        LOGGER.error("InvalidKeySpecException", e);
+                    } finally {
+                        if (!isConnectedToDatabase) {
+                            JOptionPane.showMessageDialog(null, "无法连接到数据库", "错误", JOptionPane.ERROR_MESSAGE);
+                        }
+                        isConnectedToDatabase = false;
                     }
                 }
 
