@@ -13,8 +13,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class CheckIn {
-    private static final CheckIn checkIn=new CheckIn();
-    private static final JFrame frame= new JFrame("发布签到码");
+    private static final CheckIn checkIn = new CheckIn();
+    private static final JFrame frame = new JFrame("发布签到码");
     private JPanel rootPanel;
     private JTextField textField1;
     private JTextField textField2;
@@ -22,9 +22,9 @@ public class CheckIn {
     private JTextField textField4;
     private JButton bt_confim;
     private JButton bt_cancel;
-    private String n1,n2,n3,n4,number;
+    private String n1, n2, n3, n4, number;
     private TeacherNet teacherNet;
-    private static final Logger LOGGER= LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public CheckIn() {
         //取消按钮的监听
@@ -38,8 +38,8 @@ public class CheckIn {
         textField1.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-                n1=textField1.getText();
-                if(n1.length()>=1){
+                n1 = textField1.getText();
+                if (n1.length() >= 1) {
                     e.consume();
                 }
             }
@@ -47,8 +47,8 @@ public class CheckIn {
         textField2.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-                n2=textField2.getText();
-                if(n2.length()>=1){
+                n2 = textField2.getText();
+                if (n2.length() >= 1) {
                     e.consume();
                 }
             }
@@ -56,16 +56,17 @@ public class CheckIn {
         textField3.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-                n3=textField3.getText();
-                if(n3.length()>=1){
+                n3 = textField3.getText();
+                if (n3.length() >= 1) {
                     e.consume();
                 }
             }
-        });textField4.addKeyListener(new KeyAdapter() {
+        });
+        textField4.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-                n4=textField4.getText();
-                if(n4.length()>=1){
+                n4 = textField4.getText();
+                if (n4.length() >= 1) {
                     e.consume();
                 }
             }
@@ -74,14 +75,14 @@ public class CheckIn {
         bt_confim.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                number=n1+n2+n3+n4;
-                if(number!=null){
+                number = n1 + n2 + n3 + n4;
+                if (number != null) {
                     LOGGER.info(number);
-                    teacherNet.sendAllMessage(new MessageObject(null,null,number,null,null, MessageType.CheckIn));
-                    JOptionPane.showMessageDialog(null,"签到码发布成功","消息",JOptionPane.INFORMATION_MESSAGE);
+                    teacherNet.sendAllMessage(new MessageObject(null, null, number, null, null, null, MessageType.CheckIn));
+                    JOptionPane.showMessageDialog(null, "签到码发布成功", "消息", JOptionPane.INFORMATION_MESSAGE);
                     frame.dispose();
-                }else {
-                    JOptionPane.showMessageDialog(null,"签到码不能为空","错误",JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "签到码不能为空", "错误", JOptionPane.ERROR_MESSAGE);
                 }
 
             }
@@ -94,12 +95,13 @@ public class CheckIn {
         frame.pack();
         frame.setVisible(false);
     }
-    public  void start(TeacherNet teacherNet1){
+
+    public void start(TeacherNet teacherNet1) {
         frame.setContentPane(checkIn.rootPanel);
-        frame.setSize(600,400);
+        frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
-        checkIn.teacherNet=teacherNet1;
+        checkIn.teacherNet = teacherNet1;
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }

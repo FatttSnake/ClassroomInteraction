@@ -1,9 +1,7 @@
 package com.cfive.classroom.teacher;
 
 import com.cfive.classroom.library.database.DatabaseHelper;
-import com.cfive.classroom.library.database.bean.Course;
 import com.cfive.classroom.library.database.bean.Student;
-import com.cfive.classroom.library.database.bean.Subject;
 import com.cfive.classroom.library.database.util.DependenciesNotFoundException;
 import com.cfive.classroom.library.database.util.NoConfigException;
 import com.cfive.classroom.library.net.TeacherNet;
@@ -32,8 +30,9 @@ public class Main {
     private JButton changePasswordButton;
     private JTextField workNo_show;
     private JTextField subName_show;
-    private String workNo,courseID;
-    private final List<Student> studentList = new ArrayList<>();;
+    private String workNo, courseID;
+    private final List<Student> studentList = new ArrayList<>();
+    ;
     private String[] student;
     private TeacherNet teacherNet;
     private final Logger LOGGER = LogManager.getLogger();
@@ -78,8 +77,8 @@ public class Main {
         bt_attendance.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Attendance attendance = new Attendance();
-                attendance.start(teacherNet,courseID);
+                Attend attend = new Attend();
+                attend.start(teacherNet, courseID);
             }
         });
 
@@ -88,7 +87,7 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int person;
-                String count="";
+                String count = "";
                 Object[] dropList = {"提问1个同学", "提问2个同学", "提问3个同学", "提问4个同学", "提问5个同学", "提问6个同学", "提问7个同学"};
                 Object selectedValue = JOptionPane.showInputDialog(null, "选择提问同学个数", "随机选人，持续工作中...",
                         JOptionPane.INFORMATION_MESSAGE, null, dropList, dropList[0]);  //下拉列表的内容：选择提问的人数
@@ -121,12 +120,12 @@ public class Main {
                         for (int s = 0; s < arr.length; s++) {  //遍历该数组并把每一个随机数所对应的人放到count中
                             person = Integer.parseInt(arr[s]);
                             count += student[person];
-                            count+="  ";
+                            count += "  ";
                         }
                         JOptionPane.showMessageDialog(null, "恭喜以下同学被选中：\n\t\n" + count);
                         //将选人结果群发出去
-                        teacherNet.sendAllMessage(new MessageObject(null, null, null, null, count, null,MessageType.Select));
-                    }else {
+                        teacherNet.sendAllMessage(new MessageObject(null, null, null, null, count, null, MessageType.Select));
+                    } else {
                         JOptionPane.showMessageDialog(null, "学生名单未导入", "错误", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (DependenciesNotFoundException ex) {
@@ -175,7 +174,7 @@ public class Main {
         frame.setVisible(false);
     }
 
-    public static void start(String workerNo,String courseID,String subName) {
+    public static void start(String workerNo, String courseID, String subName) {
         frame.setContentPane(main.rootPanel);
         frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
