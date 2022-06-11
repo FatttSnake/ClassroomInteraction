@@ -28,6 +28,7 @@ public class MainWindow{
     private static final Logger LOGGER = LogManager.getLogger();
     public MainWindow() {
         //登录按钮
+
         login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -40,17 +41,19 @@ public class MainWindow{
         });
     }
     public boolean check(){
-        String stuPassword = new String(passwordText.getPassword());
-        String stuNo = new String(stuNoText.getText());
+        String stuPassword = String.valueOf(passwordText.getPassword());
+        String stuNo = String.valueOf(stuNoText.getText());
         LOGGER.info(Long.valueOf(stuNo));
+        LOGGER.info(stuPassword);
         //判断密码
         if (stuNo.length() == 0 || stuPassword.length() == 0) {
             JOptionPane.showMessageDialog(null, "账号密码不能为空");
             return false;
         } else {
-            boolean checkPassword=false;
+            boolean checkPassword = false;
             try {
-                checkPassword=DatabaseHelper.checkPasswdInStudent(Long.parseLong(stuNo),stuPassword);
+                LOGGER.info(DatabaseHelper.checkPasswdInStudent(Long.parseLong(stuNo), stuPassword));
+                checkPassword = DatabaseHelper.checkPasswdInStudent(Long.parseLong(stuNo), stuPassword);
             } catch (NoConfigException e) {
                 JOptionPane.showMessageDialog(null,"没有数据库配置文件","警告",JOptionPane.ERROR_MESSAGE);
                 LOGGER.error("No configuration", e);
