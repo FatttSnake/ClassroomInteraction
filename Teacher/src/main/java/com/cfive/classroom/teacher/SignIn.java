@@ -56,7 +56,8 @@ public class SignIn {
                         JOptionPane.showMessageDialog(null,"数据库出错","警告",JOptionPane.ERROR_MESSAGE);
                         LOGGER.error("SQLException",e);
                     } catch (DependenciesNotFoundException ex) {
-                        LOGGER.error("DependenciesNotFoundException",e);
+                        JOptionPane.showMessageDialog(null,"未查询到该数据","错误",JOptionPane.ERROR_MESSAGE);
+                        LOGGER.error("DependenciesNotFoundException", e);
                     } catch (NoSuchAlgorithmException ex) {
                         LOGGER.error("NoSuchAlgorithmException",e);
                     } catch (InvalidKeySpecException ex) {

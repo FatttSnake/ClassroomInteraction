@@ -20,7 +20,7 @@ public class ClassList {
     private JButton bt_enter;
     private JComboBox comboBox;
     private JPanel selectPanel;
-    private String workerNo,courseID,subName;
+    private String workerNo, courseID, subName;
     private final List<Course> courseList = new ArrayList<>();
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -31,9 +31,9 @@ public class ClassList {
                 if (!Objects.equals(classList.comboBox.getSelectedItem(), "--请选择--")) {          //判断是否有选择内容
                     String select = classList.comboBox.getSelectedItem().toString();
                     courseID = select.substring(0, select.indexOf(" "));
-                    subName=select.substring(select.indexOf(" ")+1);
-                    LOGGER.debug(courseID+" "+subName);
-                    Main.start(workerNo,courseID,subName);
+                    subName = select.substring(select.indexOf(" ") + 1);
+                    LOGGER.debug(courseID + " " + subName);
+                    Main.start(workerNo, courseID, subName);
                 } else {
                     JOptionPane.showMessageDialog(null, "请选择您想要进入的课程", "温馨提示！", JOptionPane.WARNING_MESSAGE);
                 }
@@ -60,7 +60,7 @@ public class ClassList {
             classList.comboBox.addItem("--请选择--");
             courseList.addAll(DatabaseHelper.queryCourses(Long.parseLong(classList.workerNo)));
             for (Course course : courseList) {
-                classList.comboBox.addItem(course.getCourID()+" "+course.getSubject().getSubName());
+                classList.comboBox.addItem(course.getCourID() + " " + course.getSubject().getSubName());
             }
         } catch (NoConfigException e) {
             JOptionPane.showMessageDialog(null, "没有数据库配置文件", "警告", JOptionPane.ERROR_MESSAGE);

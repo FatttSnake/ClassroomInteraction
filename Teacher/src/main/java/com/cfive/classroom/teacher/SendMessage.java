@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class SendMessage {
     private  static final SendMessage sendMessage=new SendMessage();
@@ -28,8 +30,8 @@ public class SendMessage {
                 @Override
                 public void onReceive(MessageObject messageObject) {
                     if(messageObject.getMessageType()==MessageType.Chat){
-                        SimpleDateFormat sendTime = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
-                        messageShow.append("学生 "+messageObject.getStuName()+": "+sendTime.format(System.currentTimeMillis())+'\n'+messageObject.getMessage());
+                        LocalDateTime sendTime = LocalDateTime.now();
+                        messageShow.append("学生 "+messageObject.getStuName()+": "+sendTime.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒"))+'\n'+messageObject.getMessage());
                         System.out.println();
                     }
 
@@ -44,8 +46,8 @@ public class SendMessage {
             public void actionPerformed(ActionEvent e) {
                 String messageToAll = messageInput.getText();
                 if(messageToAll!=null){
-                    SimpleDateFormat sendTime = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
-                    messageShow.append("@所有人:  "+sendTime.format(System.currentTimeMillis())+'\n'+messageToAll+'\n');
+                    LocalDateTime sendTime = LocalDateTime.now();
+                    messageShow.append("@所有人:  "+sendTime.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒"))+'\n'+messageToAll+'\n');
                     MessageObject messageObject = new MessageObject(null,null,null,"@所有人:"+messageToAll,null,null,MessageType.ChatToAll);
                     teacherNet.sendAllMessage(messageObject);
                     messageInput.setText("");

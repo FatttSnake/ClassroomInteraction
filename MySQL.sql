@@ -175,7 +175,7 @@ SELECT attID,
        teacher.salt,
        faculty.facID,
        facName
-FROM attendance,
+FROM attend,
      student,
      class,
      major,
@@ -183,8 +183,8 @@ FROM attendance,
      subject,
      teacher,
      faculty
-where attendance.courID = course.courID
-  AND attendance.stuID = student.stuID
+where attend.courID = course.courID
+  AND attend.stuID = student.stuID
   AND class.classID = student.classID
   AND class.majorID = major.majorID
   AND major.facID = faculty.facID
