@@ -47,8 +47,12 @@ public class Center {
         chatButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Chat chat = new Chat();
-                chat.start(stuNo,stuName,studentNet);
+                if (studentNet != null) {
+                    Chat chat = new Chat();
+                    chat.start(stuNo, stuName, studentNet);
+                } else {
+                    JOptionPane.showMessageDialog(null,"没有连接至教师");
+                }
             }
         });
         //修改密码
@@ -89,7 +93,7 @@ public class Center {
                     @Override
                     public void onReceive(MessageObject messageObject) {
                         if (messageObject.getMessageType()==MessageType.CheckIn&&messageObject.getCode().equals(signInCode)) {
-                            studentNet.sendMessageThread(new MessageObject(stuNo,stuName,null, null,null,AttStatus.signed,LocalDateTime.now(),null));
+//                            studentNet.sendMessageThread(new MessageObject(stuNo,stuName,null, null,null,AttStatus.signed,LocalDateTime.now(),null));
                             JOptionPane.showMessageDialog(null, "签到成功");
                         } else {
                             JOptionPane.showMessageDialog(null,"签到失败");
@@ -104,19 +108,21 @@ public class Center {
             @Override
             public void actionPerformed(ActionEvent e) {
                 messageObject = new MessageObject(stuNo, stuName, null, null, null, null,null,MessageType.RaiseHand);
-                studentNet.sendMessageThread(messageObject);
+//                studentNet.sendMessageThread(messageObject);
                 JOptionPane.showMessageDialog(null,"你已经向老师举手");
             }
         });
         //随机抽人
-        studentNet.setOnReceiveListener(new ReceiveListener() {
-            @Override
-            public void onReceive(MessageObject messageObject) {
-                if (messageObject.getMessageType()==MessageType.Select) {
-                    JOptionPane.showMessageDialog(null,"恭喜以下同学被选中:\n\t\n"+messageObject.getCount());
+        if (studentNet != null) {
+            studentNet.setOnReceiveListener(new ReceiveListener() {
+                @Override
+                public void onReceive(MessageObject messageObject) {
+                    if (messageObject.getMessageType()==MessageType.Select) {
+                        JOptionPane.showMessageDialog(null,"恭喜以下同学被选中:\n\t\n"+messageObject.getCount());
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
 
@@ -132,6 +138,16 @@ public class Center {
         stuName = getName();
         LOGGER.info("学号"+stuNo);
         LOGGER.info("姓名"+stuName);
+    }
+
+    public static void main(String[] args) {
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setContentPane(center.rootpanel);
+        frame.setSize(600,400);
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        frame.setVisible(true);
+
     }
     //获取学生姓名
     public String getName(){

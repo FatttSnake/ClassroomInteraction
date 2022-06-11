@@ -29,7 +29,7 @@ public class ChangePassword {
         confirm.addActionListener(e -> {
             if(check()){
                 try {
-                    DatabaseHelper.changePasswdInStudent(Long.parseLong(stuNo), passwordField1.getPassword().toString());
+                    DatabaseHelper.changePasswdInStudent(Long.parseLong(stuNo), String.valueOf(passwordField1.getPassword()));
                 } catch (NoConfigException ex) {
                     JOptionPane.showMessageDialog(null,"没有数据库配置文件","警告",JOptionPane.ERROR_MESSAGE);
                     LOGGER.error("No configuration", e);
