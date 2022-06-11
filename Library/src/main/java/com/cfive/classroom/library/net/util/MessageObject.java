@@ -90,4 +90,18 @@ public class MessageObject implements Serializable {
     public void setMessageType(MessageType messageType) {
         this.messageType = messageType;
     }
+
+    @Override
+    public String toString() {
+        return "MessageObject{" +
+                "stuNo='" + stuNo + '\'' +
+                ", stuName='" + stuName + '\'' +
+                ", code='" + code + '\'' +
+                ", count='" + count + '\'' +
+                ", message='" + message + '\'' +
+                ", attStatus=" + attStatus +
+                ", localDateTime=" + localDateTime +
+                ", messageType=" + messageType +
+                '}';
+    }
 }
