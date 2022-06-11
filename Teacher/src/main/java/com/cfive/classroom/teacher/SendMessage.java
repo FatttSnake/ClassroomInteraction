@@ -46,7 +46,7 @@ public class SendMessage {
                 if(messageToAll!=null){
                     SimpleDateFormat sendTime = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
                     messageShow.append("@所有人:  "+sendTime.format(System.currentTimeMillis())+'\n'+messageToAll+'\n');
-                    MessageObject messageObject = new MessageObject(null,null,null,"@所有人:"+messageToAll,null, MessageType.ChatToAll);
+                    MessageObject messageObject = new MessageObject(null,null,null,"@所有人:"+messageToAll,null,null,MessageType.ChatToAll);
                     teacherNet.sendAllMessage(messageObject);
                     messageInput.setText("");
                 }else {

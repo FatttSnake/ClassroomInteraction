@@ -1,5 +1,7 @@
 package com.cfive.classroom.library.net.util;
 
+import com.cfive.classroom.library.database.bean.AttStatus;
+
 import java.io.Serializable;
 
 public class MessageObject implements Serializable {
@@ -8,14 +10,16 @@ public class MessageObject implements Serializable {
     private String code;
     private String count;
     private String message;
+    private AttStatus attStatus;
     private MessageType messageType;
 
-    public MessageObject(String stuNo, String name, String code, String message,String count,MessageType messageType) {
+    public MessageObject(String stuNo, String name, String code, String message,String count,AttStatus attStatus,MessageType messageType) {
         this.stuNo = stuNo;
         this.stuName = name;
         this.code = code;
         this.message = message;
         this.count = count;
+        this.attStatus=attStatus;
         this.messageType=messageType;
     }
 
@@ -49,6 +53,14 @@ public class MessageObject implements Serializable {
 
     public void setCount(String count) {
         this.count = count;
+    }
+
+    public AttStatus getAttStatus() {
+        return attStatus;
+    }
+
+    public void setAttStatus(AttStatus attStatus) {
+        this.attStatus = attStatus;
     }
 
     public String getMessage() {
