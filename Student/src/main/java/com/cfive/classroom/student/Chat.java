@@ -5,10 +5,13 @@ import com.cfive.classroom.library.net.StudentNet;
 import com.cfive.classroom.library.net.util.MessageObject;
 import com.cfive.classroom.library.net.util.MessageType;
 import com.cfive.classroom.library.net.util.ReceiveListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
 import java.util.Properties;
 
 public class Chat {
@@ -21,6 +24,7 @@ public class Chat {
     private StudentNet studentNet;
     private String stuNo, stuName,host;
     private int port;
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public Chat() {
 
@@ -29,7 +33,8 @@ public class Chat {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(String.valueOf(sendText.getText())!=null) {
-                    studentNet.sendMessageThread(new MessageObject(stuNo, stuName, null, String.valueOf(sendText.getText()), null, MessageType.Chat));
+                    LOGGER.info(LocalDateTime.now());
+                    studentNet.sendMessageThread(new MessageObject(stuNo, stuName, null, String.valueOf(sendText.getText()) ,null,null,LocalDateTime.now(),MessageType.Chat));
                 }
                 else{
                     JOptionPane.showMessageDialog(null,"无发送内容","错误！",JOptionPane.ERROR_MESSAGE);
@@ -41,7 +46,7 @@ public class Chat {
             @Override
             public void onReceive(MessageObject messageObject) {
                 if(messageObject.getMessageType()==MessageType.ChatToAll){
-                    receiveText.setText("教师：\n"+messageObject.getMessage());
+                    receiveText.append("教师：\n"+messageObject.getMessage()+"\n");
                 }
             }
         });

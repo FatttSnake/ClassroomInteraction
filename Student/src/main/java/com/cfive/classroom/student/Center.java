@@ -1,6 +1,8 @@
 package com.cfive.classroom.student;
 
 import com.cfive.classroom.library.database.DatabaseHelper;
+import com.cfive.classroom.library.database.bean.AttStatus;
+import com.cfive.classroom.library.database.util.DependenciesNotFoundException;
 import com.cfive.classroom.library.database.util.NoConfigException;
 import com.cfive.classroom.library.net.StudentNet;
 import com.cfive.classroom.library.net.util.MessageObject;
@@ -16,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Properties;
 
 public class Center {
@@ -86,6 +89,7 @@ public class Center {
                     @Override
                     public void onReceive(MessageObject messageObject) {
                         if (messageObject.getMessageType()==MessageType.CheckIn&&messageObject.getCode().equals(signInCode)) {
+                            studentNet.sendMessageThread(new MessageObject(stuNo,stuName,null, null,null,AttStatus.signed,LocalDateTime.now(),null));
                             JOptionPane.showMessageDialog(null, "签到成功");
                         } else {
                             JOptionPane.showMessageDialog(null,"签到失败");
@@ -99,7 +103,7 @@ public class Center {
         raiseHandButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                messageObject = new MessageObject(stuNo, stuName, null, null, null, MessageType.RaiseHand);
+                messageObject = new MessageObject(stuNo, stuName, null, null, null, null,null,MessageType.RaiseHand);
                 studentNet.sendMessageThread(messageObject);
                 JOptionPane.showMessageDialog(null,"你已经向老师举手");
             }
