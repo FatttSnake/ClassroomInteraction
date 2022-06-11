@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 public class SendMessage {
     private  static final SendMessage sendMessage=new SendMessage();
 
-    private static  JFrame frame = new JFrame("SendMessage");
+    private static  JFrame frame = new JFrame("发送消息");
     private JPanel rootPanel;
     private JTextArea messageInput;
     private JButton bt_sendMessage;
@@ -48,7 +48,7 @@ public class SendMessage {
                 if(messageToAll!=null){
                     LocalDateTime sendTime = LocalDateTime.now();
                     messageShow.append("@所有人:  "+sendTime.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒"))+'\n'+messageToAll+'\n');
-                    MessageObject messageObject = new MessageObject(null,null,null,"@所有人:"+messageToAll,null,null,MessageType.ChatToAll);
+                    MessageObject messageObject = new MessageObject(null,null,null,"@所有人:"+messageToAll,null,null,null,MessageType.ChatToAll);
                     teacherNet.sendAllMessage(messageObject);
                     messageInput.setText("");
                 }else {

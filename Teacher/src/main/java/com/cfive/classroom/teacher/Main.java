@@ -124,7 +124,7 @@ public class Main {
                         }
                         JOptionPane.showMessageDialog(null, "恭喜以下同学被选中：\n\t\n" + count);
                         //将选人结果群发出去
-                        teacherNet.sendAllMessage(new MessageObject(null, null, null, null, count, null, MessageType.Select));
+                        teacherNet.sendAllMessage(new MessageObject(null, null, null, null, count, null, null,MessageType.Select));
                     } else {
                         JOptionPane.showMessageDialog(null, "学生名单未导入", "错误", JOptionPane.ERROR_MESSAGE);
                     }
@@ -152,19 +152,22 @@ public class Main {
         });
 
         //主界面线程监听
-        teacherNet.setOnReceiveListener(new ReceiveListener() {
-            @Override
-            public void onReceive(MessageObject messageObject) {
-                //学生端举手监听
-                if (messageObject.getMessageType() == MessageType.RaiseHand) {
-                    JOptionPane.showMessageDialog(null, messageObject.getStuName() + " 举手了", "温馨提示！", JOptionPane.INFORMATION_MESSAGE);
+        if(teacherNet!=null){
+            teacherNet.setOnReceiveListener(new ReceiveListener() {
+                @Override
+                public void onReceive(MessageObject messageObject) {
+                    //学生端举手监听
+                    if (messageObject.getMessageType() == MessageType.RaiseHand) {
+                        JOptionPane.showMessageDialog(null, messageObject.getStuName() + " 举手了", "温馨提示！", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    //学生留言监听
+                    if (messageObject.getMessageType() == MessageType.Chat) {
+                        JOptionPane.showMessageDialog(null, messageObject.getMessage(), "学生 " + messageObject.getStuName() + " 向您留言", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
-                //学生留言监听
-                if (messageObject.getMessageType() == MessageType.Chat) {
-                    JOptionPane.showMessageDialog(null, messageObject.getMessage(), "学生 " + messageObject.getStuName() + " 向您留言", JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-        });
+            });
+        }
+
     }
 
     public static void main(String[] args) {
