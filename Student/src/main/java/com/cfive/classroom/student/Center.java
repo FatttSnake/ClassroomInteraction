@@ -33,7 +33,7 @@ public class Center {
     private JTextField stuNoText;
     private JTextField stuNameText;
     private JButton signInButton;
-    private static JFrame frame = new JFrame("Center");
+    private static JFrame frame = new JFrame("课堂互动通");
     private StudentNet studentNet;
     private String host;
     private int port;
@@ -57,7 +57,6 @@ public class Center {
             @Override
             public void actionPerformed(ActionEvent e) {
                 LOGGER.info("chatButton.studentNet"+studentNet);
-
                 if (studentNet != null) {
                     if (flag == false) {
                         chat = new Chat(studentNet,stuNo,stuName,chatReceiveListener);
@@ -135,29 +134,37 @@ public class Center {
         raiseHandButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LOGGER.info(stuNo+stuName);
-                messageObject = new MessageObject(stuNo, stuName, null, null, null, null,null,MessageType.RaiseHand);
-                studentNet.sendMessage(messageObject);
-                LOGGER.info(messageObject.getStuNo()+messageObject.getStuName());
-                JOptionPane.showMessageDialog(null,"你已经向老师举手");
+                if (studentNet != null) {
+                    LOGGER.info(stuNo+stuName);
+                    messageObject = new MessageObject(stuNo, stuName, null, null, null, null,null,MessageType.RaiseHand);
+                    studentNet.sendMessage(messageObject);
+                    LOGGER.info(messageObject.getStuNo()+messageObject.getStuName());
+                    JOptionPane.showMessageDialog(null,"你已经向老师举手");
+                } else {
+                    JOptionPane.showMessageDialog(null,"没有连接至教师");
+                }
             }
         });
         //签到
         signInButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (getSignInCode != null) {
-                    signInCode = JOptionPane.showInputDialog(null, "签到码：", "签到", JOptionPane.PLAIN_MESSAGE);
-                    LOGGER.info(getSignInCode);
-                    if (getSignInCode.equals(signInCode)) {
-                        studentNet.sendMessage(new MessageObject(stuNo, stuName, null, null, null, AttStatus.signed, LocalDateTime.now(), MessageType.CheckIn));
-                        LOGGER.info(stuNo+""+stuName);
-                        JOptionPane.showMessageDialog(null, "签到成功");
+                if (studentNet != null) {
+                    if (getSignInCode != null) {
+                        signInCode = JOptionPane.showInputDialog(null, "签到码：", "签到", JOptionPane.PLAIN_MESSAGE);
+                        LOGGER.info(getSignInCode);
+                        if (getSignInCode.equals(signInCode)) {
+                            studentNet.sendMessage(new MessageObject(stuNo, stuName, null, null, null, AttStatus.signed, LocalDateTime.now(), MessageType.CheckIn));
+                            LOGGER.info(stuNo + "" + stuName);
+                            JOptionPane.showMessageDialog(null, "签到成功");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "签到失败");
+                        }
                     } else {
-                        JOptionPane.showMessageDialog(null, "签到失败");
+                        JOptionPane.showMessageDialog(null, "无签到码");
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null,"无签到码");
+                    JOptionPane.showMessageDialog(null,"没有连接至教师");
                 }
             }
         });
@@ -173,15 +180,6 @@ public class Center {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setContentPane(center.rootpanel);
-        frame.setSize(600,400);
-        frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
-        frame.setVisible(true);
-
-    }
     //获取学生姓名
     public String getName(String stuNo){
         String name = null;

@@ -28,7 +28,7 @@ public class Chat {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String sendMessage = sendText.getText();
-                if(sendMessage!=null) {
+                if(sendMessage.length()!=0) {
                     LOGGER.info(stuNo+stuName);
                     receiveText.append("我："+LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒"))+"\n"+sendMessage+"\n");
                     studentNet.sendMessage(new MessageObject(stuNo, stuName, null,sendText.getText() ,null,null,LocalDateTime.now(),MessageType.Chat));

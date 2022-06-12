@@ -43,7 +43,7 @@ public class SendMessage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String messageToAll = messageInput.getText();
-                if(messageToAll!=null){
+                if(messageToAll.length()!=0){
                     LocalDateTime sendTime = LocalDateTime.now();
                     messageShow.append("@所有人:  "+sendTime.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒"))+'\n'+messageToAll+'\n');
                     MessageObject messageObject = new MessageObject(null,null,null,"@所有人:"+messageToAll,null,null,null,MessageType.ChatToAll);
