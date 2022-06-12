@@ -18,6 +18,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class Center {
@@ -41,7 +43,9 @@ public class Center {
     private String getSignInCode;
     private MessageObject messageObject;
     private boolean flag = false;
+    private ChatReceiveListener chatReceiveListener;
     private Chat chat;
+    private List<String> messageAll = new ArrayList<>();
 
     public Center(String stuNo) {
         this.stuNo = stuNo;
@@ -56,10 +60,9 @@ public class Center {
 
                 if (studentNet != null) {
                     if (flag == false) {
-                        chat = new Chat(studentNet,stuNo,stuName);
+                        chat = new Chat(studentNet,stuNo,stuName,chatReceiveListener);
                         flag = true;
                     }
-
                     chat.start();
                 } else {
                     JOptionPane.showMessageDialog(null,"没有连接至教师");
@@ -104,6 +107,20 @@ public class Center {
                             }
                         }
                     });
+                    chatReceiveListener = new ChatReceiveListener() {
+                        @Override
+                        public void onReceive(MessageObject messageObject) {
+                            //签到
+                            if (messageObject.getMessageType() == MessageType.CheckIn) {
+                                getSignInCode = messageObject.getCode();
+                                LOGGER.info(messageObject.getCode());
+                            }
+                            //随机抽人
+                            if (messageObject.getMessageType() == MessageType.Select) {
+                                JOptionPane.showMessageDialog(null, "恭喜以下同学被选中:\n\t\n" + messageObject.getCount());
+                            }
+                        }
+                    };
 
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null,"连接失败");

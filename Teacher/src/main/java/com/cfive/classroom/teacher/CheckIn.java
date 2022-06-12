@@ -7,13 +7,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 
 public class CheckIn {
-    private static final CheckIn checkIn = new CheckIn();
     private static final JFrame frame = new JFrame("发布签到码");
     private JPanel rootPanel;
     private JTextField textField1;
@@ -23,10 +19,9 @@ public class CheckIn {
     private JButton bt_confim;
     private JButton bt_cancel;
     private String n1, n2, n3, n4, number;
-    private TeacherNet teacherNet;
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public CheckIn() {
+    public CheckIn(TeacherNet teacherNet) {
         //取消按钮的监听
         bt_cancel.addActionListener(new ActionListener() {
             @Override
@@ -71,16 +66,41 @@ public class CheckIn {
                 }
             }
         });
+
+        //回车键的监听：发布签到码
+        textField4.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyChar()==KeyEvent.VK_ENTER){
+                    //获取签到码广播出去
+                    number = textField1.getText() + textField2.getText() + textField3.getText() + textField4.getText();
+                    if (number != null) {
+                        teacherNet.sendAllMessage(new MessageObject(null, null, number, null, null, null, null, MessageType.CheckIn));
+                        JOptionPane.showMessageDialog(null, "签到码发布成功", "消息", JOptionPane.INFORMATION_MESSAGE);
+                        frame.setVisible(false);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "签到码不能为空", "错误", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+
         //确定按钮的点击事件
         bt_confim.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //获取签到码广播出去
                 number = textField1.getText() + textField2.getText() + textField3.getText() + textField4.getText();
                 if (number != null) {
                     teacherNet.sendAllMessage(new MessageObject(null, null, number, null, null, null, null, MessageType.CheckIn));
                     JOptionPane.showMessageDialog(null, "签到码发布成功", "消息", JOptionPane.INFORMATION_MESSAGE);
-                    frame.dispose();
+                    frame.setVisible(false);
                 } else {
                     JOptionPane.showMessageDialog(null, "签到码不能为空", "错误", JOptionPane.ERROR_MESSAGE);
                 }
@@ -90,18 +110,14 @@ public class CheckIn {
     }
 
     public static void main(String[] args) {
-        frame.setContentPane(checkIn.rootPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(false);
+
     }
 
-    public void start(TeacherNet teacherNet1) {
-        frame.setContentPane(checkIn.rootPanel);
+    public void start() {
+        frame.setContentPane(rootPanel);
         frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
-        checkIn.teacherNet = teacherNet1;
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }
