@@ -82,13 +82,18 @@ public class Center {
                 try {
                     studentNet = new StudentNet(host,port);
                     JOptionPane.showMessageDialog(null, "连接成功");
-                    //签到
+
                     studentNet.setOnReceiveListener(new ReceiveListener() {
                         @Override
                         public void onReceive(MessageObject messageObject) {
+                            //签到
                             if (messageObject.getMessageType() == MessageType.CheckIn) {
                                 getSignInCode = messageObject.getCode();
                                 LOGGER.info(messageObject.getCode());
+                            }
+                            //随机抽人
+                            if (messageObject.getMessageType()==MessageType.Select) {
+                                JOptionPane.showMessageDialog(null,"恭喜以下同学被选中:\n\t\n"+messageObject.getCount());
                             }
                         }
                     });
@@ -106,7 +111,6 @@ public class Center {
         raiseHandButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 LOGGER.info(stuNo+stuName);
                 messageObject = new MessageObject(stuNo, stuName, null, null, null, null,null,MessageType.RaiseHand);
                 studentNet.sendMessage(messageObject);
@@ -114,17 +118,7 @@ public class Center {
                 JOptionPane.showMessageDialog(null,"你已经向老师举手");
             }
         });
-        //随机抽人
-        if (studentNet != null) {
-            studentNet.setOnReceiveListener(new ReceiveListener() {
-                @Override
-                public void onReceive(MessageObject messageObject) {
-                    if (messageObject.getMessageType()==MessageType.Select) {
-                        JOptionPane.showMessageDialog(null,"恭喜以下同学被选中:\n\t\n"+messageObject.getCount());
-                    }
-                }
-            });
-        }
+        //签到
         signInButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -177,7 +171,4 @@ public class Center {
         }
         return name;
     }
-
-
-
 }
