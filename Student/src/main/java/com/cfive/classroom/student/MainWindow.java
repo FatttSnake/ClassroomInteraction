@@ -33,10 +33,12 @@ public class MainWindow{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(check()){
-                    LOGGER.info("new Center");
-                    new Center().start(stuNoText.getText());
-                    LOGGER.info("center.start");
+                    Center center = new Center(stuNoText.getText());
+                    center.start();
                     frame.dispose();
+                }
+                else {
+                    JOptionPane.showMessageDialog(null,"密码错误");
                 }
             }
         });
