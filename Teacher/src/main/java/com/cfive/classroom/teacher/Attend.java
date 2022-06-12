@@ -27,51 +27,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Attend {
-    private static final Attend attend = new Attend();
     private static final JFrame frame = new JFrame("考勤情况");
     private JPanel rootPanel;
     private JTabbedPane tabbedPane1;
-    private final Object[] t1_columnTitle = {"考勤号","学号", "姓名", "签到时间","签到状态"};
+    private final Object[] t1_columnTitle = {"考勤号", "学号", "姓名", "签到时间", "签到状态"};
     private final Object[] t2_columnTitle = {"考勤号", "学号", "姓名", "签到状态"};
     private JTable table_already;
     private JTable table_undo;
     private JButton bt_refresh;
-    private TeacherNet teacherNet;
     private String courseID;
     private final List<Attendance> attendancesList = new ArrayList<>();
     private final List<Attendance> alreadyList = new ArrayList<>();
     private final List<Attendance> undoList = new ArrayList<>();
-    private DefaultTableModel undoTableModel,alreadyTableModel;
+    private DefaultTableModel undoTableModel, alreadyTableModel;
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public Attend() {
-        //学生签到信息监听
-        if(teacherNet!=null){
-            teacherNet.setOnReceiveListener(new ReceiveListener() {
-                @Override
-                public void onReceive(MessageObject messageObject) {
-                    if(messageObject.getStuNo()!=null){
-                        //判断该信息类型是否为签到并且签到状态是否为已签
-                        if (messageObject.getMessageType() == MessageType.CheckIn && messageObject.getAttStatus() == AttStatus.signed) {
-                            try {
-                                //将学生签到状态修改进数据表中
-                                DatabaseHelper.updateAttendance(messageObject.getStuNo(), messageObject.getAttStatus(),messageObject.getLocalDateTime());
-                            } catch (NoConfigException e) {
-                                JOptionPane.showMessageDialog(null, "没有数据库配置文件", "警告", JOptionPane.ERROR_MESSAGE);
-                                LOGGER.error("No configuration", e);
-                            } catch (SQLException e) {
-                                JOptionPane.showMessageDialog(null, "数据库出错", "警告", JOptionPane.ERROR_MESSAGE);
-                                LOGGER.error("SQLException", e);
-                            } catch (DependenciesNotFoundException e) {
-                                LOGGER.error("DependenciesNotFoundException", e);
-                            }
-                            //刷新表格
-                            bt_refresh.doClick();
-                        }
-                    }
-                }
-            });
-        }
+
+    public Attend(TeacherNet teacherNet, String courseID) {
+        this.courseID = courseID;
 
         //已签表格的鼠标点击事件
         table_already.addMouseListener(new MouseAdapter() {
@@ -92,6 +65,7 @@ public class Attend {
                         table_already.getModel().setValueAt(modifyStat, row, col);
                         //将修改在数据库中更改
                         try {
+                            LOGGER.info("test");
                             DatabaseHelper.updateAttendance(String.valueOf(table_already.getModel().getValueAt(row, 0)), attStatus, null);
                         } catch (NoConfigException ex) {
                             JOptionPane.showMessageDialog(null, "没有数据库配置文件", "警告", JOptionPane.ERROR_MESSAGE);
@@ -143,7 +117,7 @@ public class Attend {
                             LOGGER.error("DependenciesNotFoundException", e);
                         }
                         //如果修改为已签则刷新表格
-                        if(attStatus==AttStatus.signed){
+                        if (attStatus == AttStatus.signed) {
                             bt_refresh.doClick();
                         }
 
@@ -156,95 +130,37 @@ public class Attend {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //清空列表
-                ((DefaultTableModel)table_already.getModel()).setRowCount(0);
-                ((DefaultTableModel)table_undo.getModel()).setRowCount(0);
+                ((DefaultTableModel) table_already.getModel()).setRowCount(0);
+                ((DefaultTableModel) table_undo.getModel()).setRowCount(0);
                 attendancesList.clear();
                 alreadyList.clear();
                 undoList.clear();
                 //重新加载
-                try {
-                    attendancesList.addAll(DatabaseHelper.selectAttendanceByCourse(Long.parseLong(courseID)));  //导入该课程考勤名单
-                    for (Attendance attendance : attendancesList) {
-                        if (attendance.getAttStatus() == AttStatus.signed) {        //筛选出已签到的考勤列表
-                            alreadyList.add(attendance);
-                        } else {
-                            undoList.add(attendance);
-                        }
-                    }
-                } catch (DependenciesNotFoundException ex) {
-                    throw new RuntimeException(ex);
-                } catch (NoConfigException ex) {
-                    throw new RuntimeException(ex);
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-                //已签考勤表格
-                alreadyTableModel = new DefaultTableModel(t1_columnTitle, 0) {
-                    @Override
-                    public boolean isCellEditable(int row, int column) {
-                        return false;
-                    }
-                };
-                if (alreadyList != null) {
-                    for (Attendance attendance : alreadyList) {
-                        String attID = attendance.getAttID();
-                        String stuID = String.valueOf(attendance.getStudent().getStuID());
-                        String stuName = String.valueOf(attendance.getStudent().getStuName());
-                        LocalDateTime attTime = attendance.getAttTime();
-                        AttStatus attStatus = attendance.getAttStatus();
-                        String attTime1 = attTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                        Object row[] = {attID,stuID, stuName, attTime1,String.valueOf(attStatus)};
-                        alreadyTableModel.addRow(row);
-                    }
-                }
-                attend.table_already.setModel(alreadyTableModel);
-
-                //未签考勤表格
-                undoTableModel = new DefaultTableModel(t2_columnTitle, 0);
-                for (Attendance attendance : undoList) {
-                    String attID = attendance.getAttID();
-                    String stuID = String.valueOf(attendance.getStudent().getStuID());
-                    String stuName = String.valueOf(attendance.getStudent().getStuName());
-                    AttStatus attStatus = attendance.getAttStatus();
-                    Object row[] = {attID, stuID, stuName, String.valueOf(attStatus)};
-                    undoTableModel.addRow(row);
-                }
-                attend.table_undo.setModel(undoTableModel);
-                //设置第一列隐藏
-                TableColumn tableColumn = attend.table_undo.getColumnModel().getColumn(0);
-                tableColumn.setWidth(0);
-                tableColumn.setMinWidth(0);
-                tableColumn.setPreferredWidth(0);
-                tableColumn.setMaxWidth(0);
-                attend.table_undo.getTableHeader().getColumnModel().getColumn(0).setMaxWidth(0);
-                attend.table_undo.getTableHeader().getColumnModel().getColumn(0).setMinWidth(0);
-                attend.table_undo.setCellSelectionEnabled(true);
-
+                readData();
             }
         });
     }
 
 
     public static void main(String[] args) {
-        frame.setContentPane(attend.rootPanel);
-        frame.setSize(600, 400);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(false);
-
     }
 
-    public void start(TeacherNet teacherNet1, String courseID) {
-        frame.setContentPane(attend.rootPanel);
+    public void start() {
+        frame.setContentPane(rootPanel);
         frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
-        attend.teacherNet = teacherNet1;
-        attend.courseID = courseID;
+
+        readData();
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setVisible(true);
+
+
+    }
+
+    private void readData(){
         try {
             attendancesList.addAll(DatabaseHelper.selectAttendanceByCourse(Long.parseLong(courseID)));  //导入该课程考勤名单
-            LOGGER.debug("attendanceList:" + attendancesList);
             for (Attendance attendance : attendancesList) {
                 if (attendance.getAttStatus() == AttStatus.signed) {        //筛选出已签到的考勤列表
                     alreadyList.add(attendance);
@@ -268,7 +184,7 @@ public class Attend {
                 return false;
             }
         };
-        if (alreadyList != null) {
+        if (!alreadyList.isEmpty()) {
             for (Attendance attendance : alreadyList) {
                 String attID = attendance.getAttID();
                 String stuID = String.valueOf(attendance.getStudent().getStuID());
@@ -276,23 +192,24 @@ public class Attend {
                 LocalDateTime attTime = attendance.getAttTime();
                 AttStatus attStatus = attendance.getAttStatus();
                 String attTime1 = attTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                Object row[] = {attID,stuID, stuName, attTime1,String.valueOf(attStatus)};
+                Object row[] = {attID, stuID, stuName, attTime1, String.valueOf(attStatus)};
                 alreadyTableModel.addRow(row);
             }
         }
-        attend.table_already.setModel(alreadyTableModel);
-        TableColumn tableColumn1 = attend.table_already.getColumnModel().getColumn(0);
+        table_already.setModel(alreadyTableModel);
+        //设置未签表格的第一列考勤号隐藏
+        TableColumn tableColumn1 = table_already.getColumnModel().getColumn(0);
         tableColumn1.setWidth(0);
         tableColumn1.setMinWidth(0);
         tableColumn1.setPreferredWidth(0);
         tableColumn1.setMaxWidth(0);
-        attend.table_already.getTableHeader().getColumnModel().getColumn(0).setMaxWidth(0);
-        attend.table_already.getTableHeader().getColumnModel().getColumn(0).setMinWidth(0);
-        attend.table_already.setCellSelectionEnabled(true);
+        table_already.getTableHeader().getColumnModel().getColumn(0).setMaxWidth(0);
+        table_already.getTableHeader().getColumnModel().getColumn(0).setMinWidth(0);
+        table_already.setCellSelectionEnabled(true);
 
         //未签考勤表格
-        if(undoList!=null){         //判断该课程是否有学生名单
-            undoTableModel = new DefaultTableModel(t2_columnTitle, 0){
+        if (!undoList.isEmpty()) {         //判断该课程是否有学生名单
+            undoTableModel = new DefaultTableModel(t2_columnTitle, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
                     return false;
@@ -306,24 +223,19 @@ public class Attend {
                 Object row[] = {attID, stuID, stuName, String.valueOf(attStatus)};
                 undoTableModel.addRow(row);
             }
-            attend.table_undo.setModel(undoTableModel);
+            table_undo.setModel(undoTableModel);
             //设置未签表格的第一列考勤号隐藏
-            TableColumn tableColumn2 = attend.table_undo.getColumnModel().getColumn(0);
+            TableColumn tableColumn2 = table_undo.getColumnModel().getColumn(0);
             tableColumn2.setWidth(0);
             tableColumn2.setMinWidth(0);
             tableColumn2.setPreferredWidth(0);
             tableColumn2.setMaxWidth(0);
-            attend.table_undo.getTableHeader().getColumnModel().getColumn(0).setMaxWidth(0);
-            attend.table_undo.getTableHeader().getColumnModel().getColumn(0).setMinWidth(0);
-            attend.table_undo.setCellSelectionEnabled(true);
-        }else {
-            JOptionPane.showMessageDialog(null,"该课程学生名单未导入","提醒！",JOptionPane.INFORMATION_MESSAGE);
+            table_undo.getTableHeader().getColumnModel().getColumn(0).setMaxWidth(0);
+            table_undo.getTableHeader().getColumnModel().getColumn(0).setMinWidth(0);
+            table_undo.setCellSelectionEnabled(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "该课程学生名单未导入", "提醒！", JOptionPane.INFORMATION_MESSAGE);
         }
-
-
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setVisible(true);
-
 
     }
 

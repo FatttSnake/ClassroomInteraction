@@ -16,7 +16,7 @@ public class TeacherTest {
     @Test
     void modifyPw(){
         try {
-            DatabaseHelper.changePasswdInTeacher(Long.valueOf("1002"),"10021002");
+            DatabaseHelper.changePasswdInTeacher(Long.valueOf("1004"),"10041004");
         } catch (NoConfigException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {

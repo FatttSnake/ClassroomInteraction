@@ -1,6 +1,7 @@
 package com.cfive.classroom.teacher;
 
 import com.cfive.classroom.library.database.DatabaseHelper;
+import com.cfive.classroom.library.database.bean.AttStatus;
 import com.cfive.classroom.library.database.bean.Student;
 import com.cfive.classroom.library.database.util.DependenciesNotFoundException;
 import com.cfive.classroom.library.database.util.NoConfigException;
@@ -16,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Main {
@@ -32,10 +34,12 @@ public class Main {
     private JTextField subName_show;
     private String workNo, courseID;
     private final List<Student> studentList = new ArrayList<>();
+    private final List<String> messageAll = new ArrayList<>();
     ;
     private String[] student;
     private TeacherNet teacherNet;
     private final Logger LOGGER = LogManager.getLogger();
+    private ChatReceiveListener chatReceiveListener;
 
     public Main() {
 
@@ -59,8 +63,8 @@ public class Main {
         bt_sendMessage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SendMessage sendMessage = new SendMessage();
-                sendMessage.start(teacherNet);
+                SendMessage sendMessage = new SendMessage(teacherNet,chatReceiveListener);
+                sendMessage.start(messageAll);
             }
         });
 
@@ -68,8 +72,8 @@ public class Main {
         bt_checkIn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CheckIn checkIn = new CheckIn();
-                checkIn.start(teacherNet);
+                CheckIn checkIn = new CheckIn(teacherNet);
+                checkIn.start();
             }
         });
 
@@ -77,8 +81,8 @@ public class Main {
         bt_attendance.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Attend attend = new Attend();
-                attend.start(teacherNet, courseID);
+                Attend attend = new Attend(teacherNet, courseID);
+                attend.start();
             }
         });
 
@@ -124,7 +128,7 @@ public class Main {
                         }
                         JOptionPane.showMessageDialog(null, "恭喜以下同学被选中：\n\t\n" + count);
                         //将选人结果群发出去
-                        teacherNet.sendAllMessage(new MessageObject(null, null, null, null, count, null, null,MessageType.Select));
+                        teacherNet.sendAllMessage(new MessageObject(null, null, null, null, count, null, null, MessageType.Select));
                     } else {
                         JOptionPane.showMessageDialog(null, "学生名单未导入", "错误", JOptionPane.ERROR_MESSAGE);
                     }
@@ -152,25 +156,81 @@ public class Main {
         });
 
         //主界面线程监听
-        if(teacherNet!=null){
+//        if (teacherNet != null) {
             teacherNet.setOnReceiveListener(new ReceiveListener() {
                 @Override
                 public void onReceive(MessageObject messageObject) {
-                    if(messageObject.getStuNo()!=null){
+                    if (messageObject.getStuNo() != null) {
                         //学生端举手监听
                         if (messageObject.getMessageType() == MessageType.RaiseHand) {
-                            JOptionPane.showMessageDialog(null, "学生 "+messageObject.getStuName() + "    向您举手", "温馨提示！", JOptionPane.INFORMATION_MESSAGE);
+                            LOGGER.info("举手test");
+                            JOptionPane.showMessageDialog(null, "学生 " + messageObject.getStuName() + "    向您举手", "温馨提示！", JOptionPane.INFORMATION_MESSAGE);
                         }
                         //学生留言监听
                         if (messageObject.getMessageType() == MessageType.Chat) {
+                            LOGGER.info("留言test");
                             JOptionPane.showMessageDialog(null, messageObject.getMessage(), "学生 " + messageObject.getStuName() + " 向您留言", JOptionPane.INFORMATION_MESSAGE);
+                            messageAll.add("学生 "+messageObject.getStuName()+":  "+messageObject.getLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒"))+'\n'+messageObject.getMessage()+'\n');
+                        }
+                        //学生签到信息监听,判断该信息类型是否为签到并且签到状态是否为已签
+                        if (messageObject.getMessageType() == MessageType.CheckIn && messageObject.getAttStatus() == AttStatus.signed) {
+                            try {
+                                LOGGER.info("收到签到   " + messageObject.toString());
+                                //将学生签到状态修改进数据表中
+                                String attID = DatabaseHelper.selectFromAttendance(Long.parseLong(messageObject.getStuNo()), Long.parseLong(courseID)).getAttID();
+                                DatabaseHelper.updateAttendance(attID, messageObject.getAttStatus(), messageObject.getLocalDateTime());
+                            } catch (NoConfigException e) {
+                                JOptionPane.showMessageDialog(null, "没有数据库配置文件", "警告", JOptionPane.ERROR_MESSAGE);
+                                LOGGER.error("No configuration", e);
+                            } catch (SQLException e) {
+                                JOptionPane.showMessageDialog(null, "数据库出错", "警告", JOptionPane.ERROR_MESSAGE);
+                                LOGGER.error("SQLException", e);
+                            } catch (DependenciesNotFoundException e) {
+                                LOGGER.error("DependenciesNotFoundException", e);
+                            }
+
                         }
                     }
 
                 }
             });
-        }
+            chatReceiveListener = new ChatReceiveListener() {
+                @Override
+                public void onReceive(MessageObject messageObject) {
+                    if (messageObject.getStuNo() != null) {
+                        //学生端举手监听
+                        if (messageObject.getMessageType() == MessageType.RaiseHand) {
+                            LOGGER.info("举手test");
+                            JOptionPane.showMessageDialog(null, "学生 " + messageObject.getStuName() + "    向您举手", "温馨提示！", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                        //学生留言监听
+                        if (messageObject.getMessageType() == MessageType.Chat) {
+                            LOGGER.info("留言test");
+                            JOptionPane.showMessageDialog(null, messageObject.getMessage(), "学生 " + messageObject.getStuName() + " 向您留言", JOptionPane.INFORMATION_MESSAGE);
+                            messageAll.add("学生 "+messageObject.getStuName()+":  "+messageObject.getLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒"))+'\n'+messageObject.getMessage()+'\n');
+                        }
+                        //学生签到信息监听,判断该信息类型是否为签到并且签到状态是否为已签
+                        if (messageObject.getMessageType() == MessageType.CheckIn && messageObject.getAttStatus() == AttStatus.signed) {
+                            try {
+                                LOGGER.info("收到签到   " + messageObject.toString());
+                                //将学生签到状态修改进数据表中
+                                String attID = DatabaseHelper.selectFromAttendance(Long.parseLong(messageObject.getStuNo()), Long.parseLong(courseID)).getAttID();
+                                DatabaseHelper.updateAttendance(attID, messageObject.getAttStatus(), messageObject.getLocalDateTime());
+                            } catch (NoConfigException e) {
+                                JOptionPane.showMessageDialog(null, "没有数据库配置文件", "警告", JOptionPane.ERROR_MESSAGE);
+                                LOGGER.error("No configuration", e);
+                            } catch (SQLException e) {
+                                JOptionPane.showMessageDialog(null, "数据库出错", "警告", JOptionPane.ERROR_MESSAGE);
+                                LOGGER.error("SQLException", e);
+                            } catch (DependenciesNotFoundException e) {
+                                LOGGER.error("DependenciesNotFoundException", e);
+                            }
 
+                        }
+                    }
+                }
+            };
+//        }
     }
 
     public static void main(String[] args) {
@@ -187,7 +247,6 @@ public class Main {
         frame.setResizable(false);
         main.workNo = workerNo;
         main.courseID = courseID;
-        //开启主界面即读取端口号
         main.workNo_show.setText(workerNo);
         main.subName_show.setText(subName);
 

@@ -22,7 +22,7 @@ public class Chat {
     private static JFrame frame = new JFrame("留言");
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public Chat(StudentNet studentNet,String stuNo,String stuName) {
+    public Chat(StudentNet studentNet,String stuNo,String stuName,ChatReceiveListener chatReceiveListener) {
         //发送消息
         sendButton.addActionListener(new ActionListener() {
             @Override
@@ -46,6 +46,7 @@ public class Chat {
                 if(messageObject.getMessageType()==MessageType.ChatToAll){
                     receiveText.append("教师："+LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒"))+'\n'+messageObject.getMessage()+"\n");
                 }
+                chatReceiveListener.onReceive(messageObject);
             }
         });
     }

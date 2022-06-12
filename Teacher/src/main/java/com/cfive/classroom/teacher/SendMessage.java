@@ -6,24 +6,22 @@ import com.cfive.classroom.library.net.util.MessageType;
 import com.cfive.classroom.library.net.util.ReceiveListener;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
+import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SendMessage {
-    private  static final SendMessage sendMessage=new SendMessage();
 
-    private static  JFrame frame = new JFrame("发送消息");
+    private static final JFrame frame = new JFrame("发送消息");
     private JPanel rootPanel;
     private JTextArea messageInput;
     private JButton bt_sendMessage;
     private JTextArea messageShow;
-    private TeacherNet teacherNet;
 
-    public SendMessage() {
+    public SendMessage(TeacherNet teacherNet,ChatReceiveListener chatReceiveListener) {
         //接收学生发过来的留言
         if(teacherNet!=null){
             teacherNet.setOnReceiveListener(new ReceiveListener() {
@@ -31,10 +29,10 @@ public class SendMessage {
                 public void onReceive(MessageObject messageObject) {
                     if(messageObject.getStuNo()!=null){
                         if(messageObject.getMessageType()==MessageType.Chat){
-                            LocalDateTime sendTime = LocalDateTime.now();
-                            messageShow.append("学生 "+messageObject.getStuName()+": "+sendTime.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒"))+'\n'+messageObject.getMessage()+'\n');
+                            messageShow.append("学生 "+messageObject.getStuName()+":  "+messageObject.getLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒"))+'\n'+messageObject.getMessage()+'\n');
                         }
                     }
+                    chatReceiveListener.onReceive(messageObject);
                 }
             });
         }
@@ -60,19 +58,17 @@ public class SendMessage {
     }
 
     public static void main(String[] args) {
-        frame.setContentPane(sendMessage.rootPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(false);
     }
 
-    public  void start(TeacherNet teacherNet1){
-        frame.setContentPane(sendMessage.rootPanel);
+    public  void start(List<String> messageFromStu){
+        frame.setContentPane(rootPanel);
         frame.setSize(600,400);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
+        for (String message : messageFromStu) {
+            messageShow.append(message);
+        }
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
-        sendMessage.teacherNet = teacherNet1;
     }
 }

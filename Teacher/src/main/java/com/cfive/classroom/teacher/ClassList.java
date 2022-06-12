@@ -28,6 +28,7 @@ public class ClassList {
         bt_enter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                LOGGER.info(workerNo);
                 if (!Objects.equals(classList.comboBox.getSelectedItem(), "--请选择--")) {          //判断是否有选择内容
                     String select = classList.comboBox.getSelectedItem().toString();
                     courseID = select.substring(0, select.indexOf(" "));
