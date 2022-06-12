@@ -24,6 +24,7 @@ public class MainWindow{
     private JLabel password;
     private static JFrame frame = new JFrame("学生登录界面");
     private static final Logger LOGGER = LogManager.getLogger();
+    private boolean isConnectedToDatabase = false;
     public MainWindow() {
         //登录按钮
         passwordText.addKeyListener(new KeyListener() {
@@ -73,6 +74,7 @@ public class MainWindow{
         try {
             LOGGER.info(DatabaseHelper.checkPasswdInStudent(Long.parseLong(stuNo), stuPassword));
             checkPassword = DatabaseHelper.checkPasswdInStudent(Long.parseLong(stuNo), stuPassword);
+            isConnectedToDatabase = true;
         } catch (NoConfigException e) {
             JOptionPane.showMessageDialog(null,"没有数据库配置文件","警告",JOptionPane.ERROR_MESSAGE);
             LOGGER.error("No configuration", e);
@@ -85,6 +87,11 @@ public class MainWindow{
             LOGGER.error("NoSuchAlgorithmException",e);
         } catch (InvalidKeySpecException e) {
             LOGGER.error("InvalidKeySpecException",e);
+        }finally {
+            if (!isConnectedToDatabase) {
+                JOptionPane.showMessageDialog(null, "无法连接到数据库", "错误", JOptionPane.ERROR_MESSAGE);
+            }
+            isConnectedToDatabase = false;
         }
         return checkPassword;
     }
@@ -93,7 +100,6 @@ public class MainWindow{
         FlatLightLaf.setup();
         frame.setContentPane(mainWindow.rootPanel);
         frame.setSize(600,400);
-        frame.setTitle("登录");
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.setResizable(false);

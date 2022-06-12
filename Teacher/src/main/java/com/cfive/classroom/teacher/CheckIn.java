@@ -78,7 +78,9 @@ public class CheckIn {
                 if(e.getKeyChar()==KeyEvent.VK_ENTER){
                     //获取签到码广播出去
                     number = textField1.getText() + textField2.getText() + textField3.getText() + textField4.getText();
-                    if (number != null) {
+                    LOGGER.info(number.length());
+                    LOGGER.info(number);
+                    if (number .length() == 4) {
                         teacherNet.sendAllMessage(new MessageObject(null, null, number, null, null, null, null, MessageType.CheckIn));
                         JOptionPane.showMessageDialog(null, "签到码发布成功", "消息", JOptionPane.INFORMATION_MESSAGE);
                         frame.setVisible(false);
@@ -97,7 +99,9 @@ public class CheckIn {
             @Override
             public void actionPerformed(ActionEvent e) {
                 number = textField1.getText() + textField2.getText() + textField3.getText() + textField4.getText();
-                if (number != null) {
+                LOGGER.info(number.length());
+                LOGGER.info(number);
+                if (number .length() == 4) {
                     teacherNet.sendAllMessage(new MessageObject(null, null, number, null, null, null, null, MessageType.CheckIn));
                     JOptionPane.showMessageDialog(null, "签到码发布成功", "消息", JOptionPane.INFORMATION_MESSAGE);
                     frame.setVisible(false);

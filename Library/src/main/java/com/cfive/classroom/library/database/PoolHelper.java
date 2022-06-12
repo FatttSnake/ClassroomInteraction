@@ -28,6 +28,7 @@ public class PoolHelper {
         config.setJdbcUrl(JDBC_URL);
         config.setUsername(JDBC_USERNAME);
         config.setPassword(JDBC_PASSWORD);
+        config.setInitializationFailTimeout(30000);
         config.addDataSourceProperty("cachePrepStmts", CACHE_PREP_STMTS);
         config.addDataSourceProperty("prepStmtCacheSize", PREP_STMT_CACHE_SIZE);
         config.addDataSourceProperty("maximumPoolSize", MAXIMUM_POOL_SIZE);
