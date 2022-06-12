@@ -50,6 +50,7 @@ public class SignIn {
                             frame.setVisible(false);
                         } else {
                             JOptionPane.showMessageDialog(null, "密码错误，请重新输入", "错误！！", JOptionPane.ERROR_MESSAGE);
+                            sigIn.password_input.setText("");   //清空输入框内容
                         }
                         isConnectedToDatabase = true;
                     } catch (NoConfigException ex) {

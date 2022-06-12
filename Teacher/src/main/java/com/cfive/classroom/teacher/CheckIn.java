@@ -75,10 +75,10 @@ public class CheckIn {
         bt_confim.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                number = n1 + n2 + n3 + n4;
+                //获取签到码广播出去
+                number = textField1.getText() + textField2.getText() + textField3.getText() + textField4.getText();
                 if (number != null) {
-                    LOGGER.info(number);
-                    teacherNet.sendAllMessage(new MessageObject(null, null, number, null, null, null,null,MessageType.CheckIn));
+                    teacherNet.sendAllMessage(new MessageObject(null, null, number, null, null, null, null, MessageType.CheckIn));
                     JOptionPane.showMessageDialog(null, "签到码发布成功", "消息", JOptionPane.INFORMATION_MESSAGE);
                     frame.dispose();
                 } else {
