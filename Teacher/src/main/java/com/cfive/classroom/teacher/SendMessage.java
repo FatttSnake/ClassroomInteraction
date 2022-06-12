@@ -29,12 +29,12 @@ public class SendMessage {
             teacherNet.setOnReceiveListener(new ReceiveListener() {
                 @Override
                 public void onReceive(MessageObject messageObject) {
-                    if(messageObject.getMessageType()==MessageType.Chat){
-                        LocalDateTime sendTime = LocalDateTime.now();
-                        messageShow.append("学生 "+messageObject.getStuName()+": "+sendTime.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒"))+'\n'+messageObject.getMessage());
-                        System.out.println();
+                    if(messageObject.getStuNo()!=null){
+                        if(messageObject.getMessageType()==MessageType.Chat){
+                            LocalDateTime sendTime = LocalDateTime.now();
+                            messageShow.append("学生 "+messageObject.getStuName()+": "+sendTime.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒"))+'\n'+messageObject.getMessage()+'\n');
+                        }
                     }
-
                 }
             });
         }

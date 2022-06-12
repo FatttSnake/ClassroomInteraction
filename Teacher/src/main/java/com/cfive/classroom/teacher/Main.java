@@ -156,14 +156,17 @@ public class Main {
             teacherNet.setOnReceiveListener(new ReceiveListener() {
                 @Override
                 public void onReceive(MessageObject messageObject) {
-                    //学生端举手监听
-                    if (messageObject.getMessageType() == MessageType.RaiseHand) {
-                        JOptionPane.showMessageDialog(null, messageObject.getStuName() + " 举手了", "温馨提示！", JOptionPane.INFORMATION_MESSAGE);
+                    if(messageObject.getStuNo()!=null){
+                        //学生端举手监听
+                        if (messageObject.getMessageType() == MessageType.RaiseHand) {
+                            JOptionPane.showMessageDialog(null, "学生 "+messageObject.getStuName() + "    向您举手", "温馨提示！", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                        //学生留言监听
+                        if (messageObject.getMessageType() == MessageType.Chat) {
+                            JOptionPane.showMessageDialog(null, messageObject.getMessage(), "学生 " + messageObject.getStuName() + " 向您留言", JOptionPane.INFORMATION_MESSAGE);
+                        }
                     }
-                    //学生留言监听
-                    if (messageObject.getMessageType() == MessageType.Chat) {
-                        JOptionPane.showMessageDialog(null, messageObject.getMessage(), "学生 " + messageObject.getStuName() + " 向您留言", JOptionPane.INFORMATION_MESSAGE);
-                    }
+
                 }
             });
         }

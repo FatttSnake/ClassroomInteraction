@@ -34,6 +34,7 @@ public class ClassList {
                     subName = select.substring(select.indexOf(" ") + 1);
                     LOGGER.debug(courseID + " " + subName);
                     Main.start(workerNo, courseID, subName);
+                    frame.dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "请选择您想要进入的课程", "温馨提示！", JOptionPane.WARNING_MESSAGE);
                 }
