@@ -40,6 +40,8 @@ public class Center {
     private String stuName;
     private String getSignInCode;
     private MessageObject messageObject;
+    private boolean flag = false;
+    private Chat chat;
 
     public Center(String stuNo) {
         this.stuNo = stuNo;
@@ -51,8 +53,13 @@ public class Center {
             @Override
             public void actionPerformed(ActionEvent e) {
                 LOGGER.info("chatButton.studentNet"+studentNet);
+
                 if (studentNet != null) {
-                    Chat chat = new Chat(studentNet,stuNo,stuName);
+                    if (flag == false) {
+                        chat = new Chat(studentNet,stuNo,stuName);
+                        flag = true;
+                    }
+
                     chat.start();
                 } else {
                     JOptionPane.showMessageDialog(null,"没有连接至教师");
@@ -127,6 +134,7 @@ public class Center {
                     LOGGER.info(getSignInCode);
                     if (getSignInCode.equals(signInCode)) {
                         studentNet.sendMessage(new MessageObject(stuNo, stuName, null, null, null, AttStatus.signed, LocalDateTime.now(), MessageType.CheckIn));
+                        LOGGER.info(stuNo+""+stuName);
                         JOptionPane.showMessageDialog(null, "签到成功");
                     } else {
                         JOptionPane.showMessageDialog(null, "签到失败");
