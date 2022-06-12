@@ -1,6 +1,5 @@
 package com.cfive.classroom.student;
 
-import com.cfive.classroom.library.net.ReceiveThread;
 import com.cfive.classroom.library.net.StudentNet;
 import com.cfive.classroom.library.net.util.MessageObject;
 import com.cfive.classroom.library.net.util.MessageType;
@@ -12,29 +11,28 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 public class Chat {
-    private static final Chat chat = new Chat();
     private JPanel panel1;
     private JButton sendButton;
     private JTextArea receiveText;
     private JTextArea sendText;
     private static JFrame frame = new JFrame("留言");
-    private StudentNet studentNet;
-    private String stuNo, stuName,host;
-    private int port;
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public Chat() {
-
+    public Chat(StudentNet studentNet,String stuNo,String stuName) {
         //发送消息
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(String.valueOf(sendText.getText())!=null) {
-                    LOGGER.info(LocalDateTime.now());
-                    studentNet.sendMessageThread(new MessageObject(stuNo, stuName, null, String.valueOf(sendText.getText()) ,null,null,LocalDateTime.now(),MessageType.Chat));
+                String sendMessage = sendText.getText();
+                if(sendMessage!=null) {
+                    LOGGER.info(stuNo+stuName);
+                    receiveText.append("我："+LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒"))+sendMessage+"\n");
+                    studentNet.sendMessage(new MessageObject(stuNo, stuName, null,stuName+":"+sendText.getText() ,null,null,LocalDateTime.now(),MessageType.Chat));
+                    sendText.setText("");
                 }
                 else{
                     JOptionPane.showMessageDialog(null,"无发送内容","错误！",JOptionPane.ERROR_MESSAGE);
@@ -46,18 +44,16 @@ public class Chat {
             @Override
             public void onReceive(MessageObject messageObject) {
                 if(messageObject.getMessageType()==MessageType.ChatToAll){
-                    receiveText.append("教师：\n"+messageObject.getMessage()+"\n");
+                    receiveText.append("教师："+LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒"))+'\n'+messageObject.getMessage()+"\n");
                 }
             }
         });
     }
-    public void start(String num, String name,StudentNet studentNet1) {
-        frame.setContentPane(new Chat().panel1);
+
+    public void start() {
+        frame.setContentPane(this.panel1);
         frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        chat.stuNo = num;
-        chat.stuName = name;
-        chat.studentNet = studentNet1;
     }
 }

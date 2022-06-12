@@ -13,8 +13,6 @@ import java.sql.SQLException;
 
 public class ChangePassword {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final ChangePassword changePassword = new ChangePassword();
-
     private JPanel rootPanel;
     private JTextField textNum;
     private JButton cancel;
@@ -22,10 +20,10 @@ public class ChangePassword {
     private JPasswordField passwordField1;
     private JPasswordField passwordField2;
     private static JFrame frame = new JFrame("修改密码");
+    private String studentNo;
 
-    private String stuNo;
-
-    public ChangePassword() {
+    public ChangePassword(String stuNo) {
+        this.studentNo = stuNo;
         confirm.addActionListener(e -> {
             if(check()){
                 try {
@@ -57,40 +55,35 @@ public class ChangePassword {
         String password1,password2,num;
         num = String.valueOf(textNum.getText());
 
-        LOGGER.info("传入学号"+stuNo);
+        LOGGER.info("传入学号"+studentNo);
         LOGGER.info(num);
 
         password1 = String.valueOf(passwordField1.getPassword());
         password2 = String.valueOf(passwordField2.getPassword());
-        if(num.equals(stuNo)){
-            if (password1.length()==0 || password2.length()==0) {
-                JOptionPane.showMessageDialog(null,"输入的密码为空");
-                return false;
-            } else if (!password1.equals(password2)) {
-                JOptionPane.showMessageDialog(null, "两次输入密码不同");
-                return false;
-            } else return true;
-        }
-        else {
-            JOptionPane.showMessageDialog(null,"学号非本人学号");
+        if (num == null) {
+            JOptionPane.showMessageDialog(null, "输入的学号为空");
             return false;
+        } else {
+            if(num.equals(studentNo)){
+                if (password1.length()==0 || password2.length()==0) {
+                    JOptionPane.showMessageDialog(null,"输入的密码为空");
+                    return false;
+                } else if (!password1.equals(password2)) {
+                    JOptionPane.showMessageDialog(null, "两次输入密码不同");
+                    return false;
+                } else return true;
+            }
+            else {
+                JOptionPane.showMessageDialog(null,"学号非本人学号");
+                return false;
+            }
         }
     }
-
-
-    public void start(String stuNo) {
-        frame.setContentPane(changePassword.rootPanel);
+    public void start() {
+        frame.setContentPane(rootPanel);
         frame.setSize(600,400);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setVisible(true);
-        changePassword.stuNo = stuNo;
-        LOGGER.info(changePassword.stuNo);
-    }
-    public static void main(String[] args) {
-        frame.setContentPane(changePassword.rootPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600,400);
-        frame.setVisible(false);
     }
 }
