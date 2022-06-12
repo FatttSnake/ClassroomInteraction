@@ -727,6 +727,18 @@ public class DatabaseHelper {
     }
 
     /**
+     * 通过学生编号和课程编号查询考勤
+     *
+     * @param stuID 学生编号
+     * @param courID 课程编号
+     * @return <code>Attendance</code> 考勤类
+     * @see Attendance
+     */
+    public static Attendance selectFromAttendance(long stuID, long courID) throws NoConfigException, SQLException {
+        return AttendanceOA.select(stuID, courID);
+    }
+
+    /**
      * 插入考勤
      *
      * @param courID 隶属课程
