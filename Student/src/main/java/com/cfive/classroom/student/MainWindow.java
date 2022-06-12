@@ -37,10 +37,7 @@ public class MainWindow{
                         center.start();
                         frame.dispose();
                     }
-                    else {
-                        JOptionPane.showMessageDialog(null,"密码错误");
-                        passwordText.setText("");
-                    }
+
                 }
             }
             @Override
@@ -49,15 +46,20 @@ public class MainWindow{
         login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(check()){
-                    Center center = new Center(stuNoText.getText());
-                    center.start();
-                    frame.dispose();
+                if (String.valueOf((stuNoText.getText())).length() == 0 || String.valueOf(passwordText.getPassword()).length() == 0) {
+                    JOptionPane.showMessageDialog(null, "账号密码不能为空");
+                } else {
+                    if(check()){
+                        Center center = new Center(stuNoText.getText());
+                        center.start();
+                        frame.dispose();
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null,"密码错误");
+                        passwordText.setText("");
+                    }
                 }
-                else {
-                    JOptionPane.showMessageDialog(null,"密码错误");
-                    passwordText.setText("");
-                }
+
             }
         });
     }
@@ -67,30 +69,26 @@ public class MainWindow{
         LOGGER.info(Long.valueOf(stuNo));
         LOGGER.info(stuPassword);
         //判断密码
-        if (stuNo.length() == 0 || stuPassword.length() == 0) {
-            JOptionPane.showMessageDialog(null, "账号密码不能为空");
-            return false;
-        } else {
-            boolean checkPassword = false;
-            try {
-                LOGGER.info(DatabaseHelper.checkPasswdInStudent(Long.parseLong(stuNo), stuPassword));
-                checkPassword = DatabaseHelper.checkPasswdInStudent(Long.parseLong(stuNo), stuPassword);
-            } catch (NoConfigException e) {
-                JOptionPane.showMessageDialog(null,"没有数据库配置文件","警告",JOptionPane.ERROR_MESSAGE);
-                LOGGER.error("No configuration", e);
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null,"数据库出错","警告",JOptionPane.ERROR_MESSAGE);
-                LOGGER.error("SQLException",e);
-            } catch (DependenciesNotFoundException e) {
-                LOGGER.error("DependenciesNotFoundException",e);
-            } catch (NoSuchAlgorithmException e) {
-                LOGGER.error("NoSuchAlgorithmException",e);
-            } catch (InvalidKeySpecException e) {
-                LOGGER.error("InvalidKeySpecException",e);
-            }
-            return checkPassword;
+        boolean checkPassword = false;
+        try {
+            LOGGER.info(DatabaseHelper.checkPasswdInStudent(Long.parseLong(stuNo), stuPassword));
+            checkPassword = DatabaseHelper.checkPasswdInStudent(Long.parseLong(stuNo), stuPassword);
+        } catch (NoConfigException e) {
+            JOptionPane.showMessageDialog(null,"没有数据库配置文件","警告",JOptionPane.ERROR_MESSAGE);
+            LOGGER.error("No configuration", e);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"数据库出错","警告",JOptionPane.ERROR_MESSAGE);
+            LOGGER.error("SQLException",e);
+        } catch (DependenciesNotFoundException e) {
+            LOGGER.error("DependenciesNotFoundException",e);
+        } catch (NoSuchAlgorithmException e) {
+            LOGGER.error("NoSuchAlgorithmException",e);
+        } catch (InvalidKeySpecException e) {
+            LOGGER.error("InvalidKeySpecException",e);
         }
+        return checkPassword;
     }
+
     public static void main(String[] args) {
         FlatLightLaf.setup();
         frame.setContentPane(mainWindow.rootPanel);
