@@ -9,9 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
@@ -28,7 +26,26 @@ public class MainWindow{
     private static final Logger LOGGER = LogManager.getLogger();
     public MainWindow() {
         //登录按钮
-
+        passwordText.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_ENTER){
+                    if(check()){
+                        Center center = new Center(stuNoText.getText());
+                        center.start();
+                        frame.dispose();
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null,"密码错误");
+                        passwordText.setText("");
+                    }
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -39,6 +56,7 @@ public class MainWindow{
                 }
                 else {
                     JOptionPane.showMessageDialog(null,"密码错误");
+                    passwordText.setText("");
                 }
             }
         });
