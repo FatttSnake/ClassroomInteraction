@@ -22,6 +22,20 @@ public class DatabaseInsertTest {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Test
+    void insertFaculty() throws IOException {
+        getFromFile("faculty.CSV").forEach(s -> {
+        int facID = Integer.parseInt(s.substring(0, s.indexOf(",")));
+        String facName = s.substring(s.indexOf(",") + 1);
+        try {
+            DatabaseHelper.insertIntoFaculty(facID, facName);
+        } catch (NoConfigException | SQLException | InsertException | AlreadyExistsException e) {
+            LOGGER.error(e);
+        }
+    });
+
+    }
+
+    @Test
     void insertSubject() throws IOException {
         getFromFile("subject.CSV").forEach(s -> {
             int subID = Integer.parseInt(s.substring(0, s.indexOf(",")));
