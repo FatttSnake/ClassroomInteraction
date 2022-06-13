@@ -2,16 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ClassroomInteraction.iml" filepath="$PROJECT_DIR$/ClassroomInteraction.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Library/ClassroomInteraction.Library.iml" filepath="$PROJECT_DIR$/Library/ClassroomInteraction.Library.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Library/src/main/ClassroomInteraction.Library.main.iml" filepath="$PROJECT_DIR$/Library/src/main/ClassroomInteraction.Library.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Library/src/test/ClassroomInteraction.Library.test.iml" filepath="$PROJECT_DIR$/Library/src/test/ClassroomInteraction.Library.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Student/ClassroomInteraction.Student.iml" filepath="$PROJECT_DIR$/Student/ClassroomInteraction.Student.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Student/src/main/ClassroomInteraction.Student.main.iml" filepath="$PROJECT_DIR$/Student/src/main/ClassroomInteraction.Student.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Student/src/test/ClassroomInteraction.Student.test.iml" filepath="$PROJECT_DIR$/Student/src/test/ClassroomInteraction.Student.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Teacher/ClassroomInteraction.Teacher.iml" filepath="$PROJECT_DIR$/Teacher/ClassroomInteraction.Teacher.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Teacher/src/main/ClassroomInteraction.Teacher.main.iml" filepath="$PROJECT_DIR$/Teacher/src/main/ClassroomInteraction.Teacher.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Teacher/src/test/ClassroomInteraction.Teacher.test.iml" filepath="$PROJECT_DIR$/Teacher/src/test/ClassroomInteraction.Teacher.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Library/Library.iml" filepath="$PROJECT_DIR$/Library/Library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Student/Student.iml" filepath="$PROJECT_DIR$/Student/Student.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Teacher/Teacher.iml" filepath="$PROJECT_DIR$/Teacher/Teacher.iml" />
     </modules>
   </component>
 </project>

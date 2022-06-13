@@ -2,25 +2,9 @@
 *.class
 
 # Generated files
-/gen/
-/Library/gen/
-/Student/gen/
-/Teacher/gen/
-
-# build
-/build/
-/Library/build/
-/Student/build/
-/Teacher/build/
-
-# idea
-/out/
-/Library/out/
-/Student/out/
-/Teacher/out/
-
-# log
-/**/logs/
+bin/
+gen/
+out/
 
 # Version control
 vcs.xml
