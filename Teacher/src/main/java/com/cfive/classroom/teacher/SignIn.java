@@ -21,7 +21,7 @@ import java.util.List;
 
 public class SignIn {
     private static final SignIn sigIn = new SignIn();
-    private static final JFrame frame = new JFrame("教师端");;
+    private static final JFrame frame = new JFrame("教师端");
     private JPanel rootJPanel;
     private JButton login_Button;
     private JTextField workerNo_input;

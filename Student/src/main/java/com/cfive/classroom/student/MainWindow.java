@@ -33,12 +33,7 @@ public class MainWindow{
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode()==KeyEvent.VK_ENTER){
-                    if(check()){
-                        Center center = new Center(stuNoText.getText());
-                        center.start();
-                        frame.dispose();
-                    }
-
+                    login.doClick();
                 }
             }
             @Override
@@ -68,7 +63,6 @@ public class MainWindow{
         String stuPassword = String.valueOf(passwordText.getPassword());
         String stuNo = String.valueOf(stuNoText.getText());
         LOGGER.info(Long.valueOf(stuNo));
-        LOGGER.info(stuPassword);
         //判断密码
         boolean checkPassword = false;
         try {
